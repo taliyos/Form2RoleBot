@@ -112,6 +112,9 @@ namespace DiscordBot
         public string APIKey;
         public string SpreadsheetID;
         public string Range;
-        public string Delay;
+        public int RolesStartAfter;
+        public int RolesEndBefore;
+        public int DiscordIDField;
+        public int NicknameField;
     }
 }

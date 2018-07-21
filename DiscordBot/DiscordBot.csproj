@@ -233,6 +233,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Sheets.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Modules\Misc.cs" />
     <Compile Include="Program.cs" />

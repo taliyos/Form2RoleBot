@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -11,7 +12,7 @@ namespace DiscordBot
         private DiscordSocketClient Client;
         private CommandHandler Handler;
 
-        private const string Version = "0.0.1";
+        private const string Version = "0.0.3";
 
         private static void Main(string[] args)
             => new Program().StartAsync(args).GetAwaiter().GetResult();
@@ -36,6 +37,9 @@ namespace DiscordBot
             await Client.StartAsync();
             Handler = new CommandHandler();
             await Handler.InitializeAsync(Client);
+            await Task.Delay(1000);
+            Sheets sheets = new Sheets();
+            await sheets.UpdateRoles(Client);
             await Task.Delay(-1);
         }
 
