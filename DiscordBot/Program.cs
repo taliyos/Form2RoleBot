@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using DiscordBot.Modules;
 
 namespace DiscordBot
 {
-    class Program
+    internal class Program
     {
-        private DiscordSocketClient Client;
-        private CommandHandler Handler;
+        private DiscordSocketClient _client;
+        private CommandHandler _handler;
 
-        private const string Version = "0.0.3";
+        private const string Version = "0.1.0";
 
         private static void Main(string[] args)
             => new Program().StartAsync(args).GetAwaiter().GetResult();
@@ -24,27 +22,31 @@ namespace DiscordBot
             Console.WriteLine("Bot Token: " + Config.Bot.Token);
             Console.WriteLine("Bot Prefix: " + Config.Bot.Prefix);
 
-            if (String.IsNullOrEmpty(Config.Bot.Token))
+            if (string.IsNullOrEmpty(Config.Bot.Token))
             {
                 return;
             }
-            Client = new DiscordSocketClient(new DiscordSocketConfig
+            _client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 LogLevel = LogSeverity.Verbose
             });
-            Client.Log += Log;
-            await Client.LoginAsync(TokenType.Bot, Config.Bot.Token);
-            await Client.StartAsync();
-            Handler = new CommandHandler();
-            await Handler.InitializeAsync(Client);
+            _client.Log += Log;
+            await _client.LoginAsync(TokenType.Bot, Config.Bot.Token);
+            await _client.StartAsync();
+            _handler = new CommandHandler();
+            await _handler.InitializeAsync(_client);
             await Task.Delay(1000);
-            Sheets sheets = new Sheets();
-            await sheets.UpdateRoles(Client);
-            await Task.Delay(-1);
+            await Sheets.UpdateRoles(_client); // forces update initially on all servers
+            Console.WriteLine("Starting sheet checking loop");
+            while (true)
+            {
+                await Task.Delay((int)Math.Pow(1000, 2.19)); // ~an hour between updates
+                await Sheets.CheckSheets(_client);
+            }
         }
 
 
-        private async Task Log(LogMessage message)
+        private static async Task Log(LogMessage message)
         {
             Console.WriteLine(message.Message);
         }
@@ -61,7 +63,7 @@ namespace DiscordBot
             {
                 if (s.Equals("--version"))
                 {
-                    Console.WriteLine("Form2Role v{0}", Version);
+                    Console.WriteLine("Form2Role Bot v{0}", Version);
                 }
                 else if (s.Equals("--help"))
                 {
