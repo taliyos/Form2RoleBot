@@ -1,7 +1,7 @@
 # Form2RoleBot
 
 ## About
-Form2Role bot is a Discord bot that takes data from Google Sheets in order to assign roles to users. You can get the latest version at: https://github.com/talios0/Form2RoleBot/releases
+Form2Role bot is a Discord bot that takes data from Google Sheets in order to assign roles to users. Created using Discord.NET. You can get the latest version at: https://github.com/talios0/Form2RoleBot/releases
 
 ## Required Fields
 
