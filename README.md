@@ -108,8 +108,7 @@ If the bot doesn't do anything in the console when it should, press *enter* in t
 This occurs because console write outs are paused when text is highlighted.
 
 ## Editing the Code
-Make a clone of this repository and do whatever you like, just give credit. :)
-You'll find some comments in the code that may help you. (or not, but hey, can't say I didn't do anything xD).
+You'll find some comments in the code that may help you. (or not, but hey, can't say I didn't do anything xD). If you need help understanding some, you can always message me.
 
 ## Other
 When will this be updated? - I don't know.
