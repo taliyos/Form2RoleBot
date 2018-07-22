@@ -125,7 +125,7 @@ namespace DiscordBot
                                 }
                                 catch
                                 {
-                                    Console.WriteLine("No nickname specified");
+                                    Console.WriteLine("No nickname specified or their rank is too high.");
                                 }
                             }
 
@@ -159,9 +159,9 @@ namespace DiscordBot
             // Checking if the newly retrieved sheet is the same as the previous one
             if (values.Count == _previousSheetValues.Count)
             {
-                for (int i = 0; i > values.Count - 1; i++)
+                for (int i = 0; i < values.Count; i++)
                 {
-                    for (int x = 0; x > values[i].Count - 1; i++)
+                    for (int x = 0; x < values[i].Count; x++)
                     {
                         if (!values[i][x].Equals(_previousSheetValues[i][x]))
                         {

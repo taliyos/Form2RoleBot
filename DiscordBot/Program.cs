@@ -28,19 +28,19 @@ namespace DiscordBot
             }
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
-                LogLevel = LogSeverity.Verbose
+                LogLevel = LogSeverity.Info
             });
             _client.Log += Log;
             await _client.LoginAsync(TokenType.Bot, Config.Bot.Token);
             await _client.StartAsync();
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
-            await Task.Delay(1000);
+            await Task.Delay(1000); // delay so update roles doesn't run before connecting to server.
             await Sheets.UpdateRoles(_client); // forces update initially on all servers
             Console.WriteLine("Starting sheet checking loop");
             while (true)
             {
-                await Task.Delay((int)Math.Pow(1000, 2.19)); // ~an hour between updates
+                await Task.Delay(3600000); // an hour between updates
                 await Sheets.CheckSheets(_client);
             }
         }
