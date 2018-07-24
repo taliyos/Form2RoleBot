@@ -7,7 +7,7 @@
     <ProjectGuid>{5544657B-E1A5-41EF-A1A8-E565211151DE}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>DiscordBot</RootNamespace>
-    <AssemblyName>DiscordBot</AssemblyName>
+    <AssemblyName>Form2RoleBot</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -23,7 +23,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>0.1.1.%2a</ApplicationVersion>
+    <ApplicationVersion>0.1.2.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -99,7 +99,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>FD0B7B4008606FA6D61570BC1A198BECBFE4A748</ManifestCertificateThumbprint>
@@ -293,7 +293,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <Compile Include="CommandHandler.cs" />
-    <None Include="DiscordBot_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>

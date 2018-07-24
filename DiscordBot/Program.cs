@@ -10,7 +10,7 @@ namespace DiscordBot
         private DiscordSocketClient _client;
         private CommandHandler _handler;
 
-        private const string Version = "0.1.1";
+        private const string Version = "0.1.2";
 
         private static void Main(string[] args)
             => new Program().StartAsync(args).GetAwaiter().GetResult();
@@ -40,7 +40,7 @@ namespace DiscordBot
             Console.WriteLine("Starting sheet checking loop");
             while (true)
             {
-                await Task.Delay(3600000); // an hour between updates
+                await Task.Delay(Config.Bot.UpdateDelay * 1000); // an hour between updates
                 await Sheets.CheckSheets(_client);
             }
         }

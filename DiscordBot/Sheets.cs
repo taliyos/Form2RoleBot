@@ -140,7 +140,7 @@ namespace DiscordBot
                                 }
                                 catch
                                 {
-                                    Console.WriteLine("No nickname specified");
+                                    Console.WriteLine("No nickname specified or their rank is too high.");
                                 }
                             }
                         }
@@ -151,6 +151,7 @@ namespace DiscordBot
 
         public static async Task CheckSheets(DiscordSocketClient client)
         {
+
             SpreadsheetsResource.ValuesResource.GetRequest request = _service.Spreadsheets.Values.Get(SheetId, Range);
 
             ValueRange responses = request.Execute();
@@ -179,7 +180,8 @@ namespace DiscordBot
                 _previousSheetValues = values;
             }
 
-            Console.WriteLine("[" + DateTime.Now +"] Finished Checking Sheets Data.");
+            Console.WriteLine("[" + DateTime.Now + "] No update from linked Google Sheet.");
+
         }
 
     }

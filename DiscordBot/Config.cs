@@ -40,7 +40,8 @@ namespace DiscordBot
                 Bot = new BotConfig
                 {
                     // Default values for BotConfig
-                    Prefix = "!"
+                    Prefix = "!",
+                    UpdateDelay = 3600 // 1 hour default
                 };
 
                 string botJson = JsonConvert.SerializeObject(Bot, Formatting.Indented);
@@ -111,6 +112,7 @@ namespace DiscordBot
     {
         public string Token; // Get this from discordapp.com/developers (this is also where you can add the bot to a server)
         public string Prefix; // The character required to send a command
+        public int UpdateDelay; // Delay between checking for updates (in seconds)
     }
 
     public struct GoogleConfig // Get the API Key from console.developers.google.com and make a sheets api and key. Get the sheets id from the google sheet (make one from a google form)
