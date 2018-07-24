@@ -11,8 +11,8 @@ As of now, it is required to have the **Discord Username with Discriminator (ie.
 
 *Note that a change to the username will also cause the discriminator to change*.
 
-## roles
-Build v0.1.0 does not create roles if they aren't found and doesn't remove roles from the user. For now, this needs to be done manually. 
+## Roles
+Build v0.1.2 does not create roles if they aren't found and doesn't remove roles from the user. For now, this needs to be done manually for now. 
 
 The bot does support multiple roles per data box (checkboxes in google forms) and use of the " + " which denotes two roles together.
 
@@ -23,7 +23,7 @@ Form2Role Bot allows for a nickname field which will change the user's nickname.
 
 **See JSON configuration for more information how to configure the bot to find this field**
 
-## commands
+## Commands
 I would like to preface this to say the use of commands isn't neccessary. The bot will *automatically update all connected servers around every hour*. However, one command does exist which will force an update.
 
 `!update`
@@ -47,13 +47,18 @@ This is the Discord Bot token.
 - After confirming, *reveal the token*. 
 - Copy/Paste the token into the configuration file.
 
-`"token": "tokenhere",`
+`"Token": "tokenhere",`
 
 
 #### Prefix
 The prefix is the character that comes before a command. By default, the prefix is '!', but can be changed.
 
-`"prefix": "!"`
+`"Prefix": "!",`
+
+#### UpdateDelay
+The delay between checking for updates to the provided Google Sheet. This is a number specfied in seconds.
+
+`"UpdateDelay": 3600`
 
 ### Google Configuration
 Located in Config/googleConfig.json
@@ -113,4 +118,4 @@ You'll find some comments in the code that may help you. (or not, but hey, can't
 ## Other
 When will this be updated? - I don't know.
 
-What will be in future updates? - Ability to change delay, Roles will be added if they aren't found, Roles will be removed from a user if they have a role they shouldn't.
+What will be in future updates? - Roles will be added if they aren't found, Roles will be removed from a user if they have a role they shouldn't.
