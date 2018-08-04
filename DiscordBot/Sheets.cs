@@ -47,18 +47,23 @@ namespace DiscordBot
                     {
                         foreach (var row in values)
                         {
+                            string username;
                             if (Config.GoogleData.DiscordIDField != -1)
                             {
-                                if (row[Config.GoogleData.DiscordIDField].ToString() != u.Username + "#" + u.Discriminator &&
-                                    row[Config.GoogleData.DiscordIDField].ToString() != u.Discriminator &&
-                                    row[Config.GoogleData.DiscordIDField].ToString() != u.Nickname + "#" + u.Discriminator // Nickname is here just in case, but it is probably one of the worst ways of doing this since it'll change once the nickname updates
+                                username = row[Config.GoogleData.DiscordIDField].ToString();
+                                username = username.Trim();
+                                if (username != u.Username + "#" + u.Discriminator &&
+                                    username != u.Discriminator &&
+                                    username != u.Nickname + "#" + u.Discriminator // Nickname is here just in case, but it is probably one of the worst ways of doing this since it'll change once the nickname updates
                                 ) continue; // Checks for matching user
                             }
                             else
                             {
-                                if (row[0].ToString() != u.Username + "#" + u.Discriminator &&
-                                    row[0].ToString() != u.Discriminator &&
-                                    row[0].ToString() != u.Nickname + "#" + u.Discriminator
+                                username = row[0].ToString();
+                                username = username.Trim();
+                                if (username != u.Username + "#" + u.Discriminator &&
+                                    username != u.Discriminator &&
+                                    username != u.Nickname + "#" + u.Discriminator
                                 ) continue; // Checks for matching user
                             }
                             
@@ -157,7 +162,7 @@ namespace DiscordBot
             ValueRange responses = request.Execute();
             IList<IList<Object>> values = responses.Values;
 
-            // Checking if the newly retrieved sheet is the same as the previous one
+            // Checks if the newly retrieved sheet is the same as the previous one
             if (values.Count == _previousSheetValues.Count)
             {
                 for (int i = 0; i < values.Count; i++)
@@ -178,9 +183,10 @@ namespace DiscordBot
             {
                 await AssignRoles(client, values);
                 _previousSheetValues = values;
+                return;
             }
 
-            Console.WriteLine("[" + DateTime.Now + "] No update from linked Google Sheet.");
+            Console.WriteLine("[" + DateTime.Now + "] No update from the linked Google Sheet.");
 
         }
 

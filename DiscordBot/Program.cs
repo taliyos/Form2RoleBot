@@ -1,4 +1,10 @@
-﻿using System;
+﻿/* Form2Role Bot v0.1.3a1 created by Talios0 (August 4th, 2018)
+ * Check the project out on Github: https://github.com/talios0/Form2RoleBot
+ * The program uses Newtonsoft's JSON, RogueExceptions' Discord.NET, and the Google Sheets API v4
+ */
+
+
+using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
@@ -10,7 +16,7 @@ namespace DiscordBot
         private DiscordSocketClient _client;
         private CommandHandler _handler;
 
-        private const string Version = "0.1.2";
+        private const string Version = "0.1.3a1";
 
         private static void Main(string[] args)
             => new Program().StartAsync(args).GetAwaiter().GetResult();
