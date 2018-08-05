@@ -14,6 +14,8 @@ namespace DiscordBot
         public static BotConfig Bot;
         public static GoogleConfig GoogleData;
 
+        public static bool newBotConfig, newGoogleConfig;
+
         
 
         static Config()
@@ -40,10 +42,12 @@ namespace DiscordBot
                 Bot = new BotConfig
                 {
                     // Default values for BotConfig
+                    Token = null,
                     Prefix = "!",
-                    UpdateDelay = 3600 // 1 hour default
+                    UpdateDelay = 60 // 1 hour default
                 };
 
+                newBotConfig = true;
                 string botJson = JsonConvert.SerializeObject(Bot, Formatting.Indented);
                 File.WriteAllText(ConfFile, botJson);
             }
@@ -62,6 +66,36 @@ namespace DiscordBot
             }
         }
 
+        public static void WriteToConfig(string token, string prefix, int delay)
+        {
+            Bot = new BotConfig()
+            {
+                Token = token,
+                Prefix = prefix,
+                UpdateDelay = delay
+            };
+
+            string botJson = JsonConvert.SerializeObject(Bot, Formatting.Indented);
+            File.WriteAllText(ConfFile, botJson);
+        }
+
+        public static void WriteToGoogleConfig(string apiKey, string spreadsheetID, string range, int rolesStartAfter, int rolesEndBefore, int discordID, int nickname)
+        {
+            GoogleData = new GoogleConfig()
+            {
+                APIKey = apiKey,
+                SheetsID = spreadsheetID,
+                Range = range,
+                RolesStartAfter = rolesStartAfter,
+                RolesEndBefore = rolesEndBefore,
+                DiscordIDField = discordID,
+                NicknameField = nickname,
+            };
+
+            string botJson = JsonConvert.SerializeObject(Bot, Formatting.Indented);
+            File.WriteAllText(ConfFile, botJson);
+        }
+
         private static void CreateGoogleConfigFiles()
         {
             if (!File.Exists(GoogleConfFile))
@@ -74,11 +108,11 @@ namespace DiscordBot
                     NicknameField = -1
                 };
 
+                newGoogleConfig = true;
                 // Default values for GoogleData
 
                 string googleJson = JsonConvert.SerializeObject(GoogleData, Formatting.Indented);
                 File.WriteAllText(GoogleConfFile, googleJson);
-                Console.WriteLine("Google Sheets data not found or corrupt.");
             }
             else
             {
@@ -112,13 +146,13 @@ namespace DiscordBot
     {
         public string Token; // Get this from discordapp.com/developers (this is also where you can add the bot to a server)
         public string Prefix; // The character required to send a command
-        public int UpdateDelay; // Delay between checking for updates (in seconds)
+        public int UpdateDelay; // Delay between checking for updates (in minutes)
     }
 
     public struct GoogleConfig // Get the API Key from console.developers.google.com and make a sheets api and key. Get the sheets id from the google sheet (make one from a google form)
     {
         public string APIKey;
-        public string SpreadsheetID;
+        public string SheetsID;
         public string Range; // Range on the form ie. B2:L which gets all information from B2 to L (goes all the way down too)
         public int RolesStartAfter; // # of spots after the initial index in the range where the roles begin
         public int RolesEndBefore; // # of spots before the final index in the range where the last role lies

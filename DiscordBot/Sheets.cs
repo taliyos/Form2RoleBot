@@ -12,7 +12,7 @@ namespace DiscordBot
     class Sheets
     {
 
-        private static readonly string SheetId = Config.GoogleData.SpreadsheetID;
+        private static readonly string SheetId = Config.GoogleData.SheetsID;
         private static readonly string Range = Config.GoogleData.Range;
 
         private static SheetsService _service;
