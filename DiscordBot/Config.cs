@@ -92,8 +92,8 @@ namespace DiscordBot
                 NicknameField = nickname,
             };
 
-            string botJson = JsonConvert.SerializeObject(Bot, Formatting.Indented);
-            File.WriteAllText(ConfFile, botJson);
+            string botJson = JsonConvert.SerializeObject(GoogleData, Formatting.Indented);
+            File.WriteAllText(GoogleConfFile, botJson);
         }
 
         private static void CreateGoogleConfigFiles()
