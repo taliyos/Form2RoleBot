@@ -23,7 +23,7 @@ namespace DiscordBot
         {
             _service = new SheetsService(new BaseClientService.Initializer()
             {
-                //ApiKey = Config.GoogleData.APIKey,
+                ApiKey = Config.GoogleData.APIKey,
                 ApplicationName = "Form2Role Bot"
             });
 
@@ -38,6 +38,7 @@ namespace DiscordBot
 
         private static async Task AssignRoles(DiscordSocketClient client, IList<IList<Object>> values)
         {
+
             if (values != null && values.Count > 0)
             {
                 foreach (SocketGuild g in client.Guilds) // Updates for every guild the bot is registered in. Take note that this will quickly hit a discord limit. This is fine, it will resume after a few seconds.
@@ -47,26 +48,7 @@ namespace DiscordBot
                     {
                         foreach (var row in values)
                         {
-                            string username;
-                            if (Config.GoogleData.DiscordIDField != -1)
-                            {
-                                username = row[Config.GoogleData.DiscordIDField].ToString();
-                                username = username.Trim();
-                                if (username != u.Username + "#" + u.Discriminator &&
-                                    username != u.Discriminator &&
-                                    username != u.Nickname + "#" + u.Discriminator // Nickname is here just in case, but it is probably one of the worst ways of doing this since it'll change once the nickname updates
-                                ) continue; // Checks for matching user
-                            }
-                            else
-                            {
-                                username = row[0].ToString();
-                                username = username.Trim();
-                                if (username != u.Username + "#" + u.Discriminator &&
-                                    username != u.Discriminator &&
-                                    username != u.Nickname + "#" + u.Discriminator
-                                ) continue; // Checks for matching user
-                            }
-                            
+                            if (!FindUsername(row, u)) continue;
 
                             Console.WriteLine("\nUpdating Roles for " + u.Username + "#" + u.Discriminator);
                             List<string> roles = new List<string>();
@@ -93,7 +75,22 @@ namespace DiscordBot
                                     roleName = roleName.Replace(" ", "");
                                     seperatedRoles = roleName.Split('+');
                                 }
-                                
+
+                                foreach (string formRole in seperatedRoles)
+                                {
+                                    foreach (string roleGroup in Config.RoleGroup.Groups)
+                                    {
+                                        foreach (SocketRole userRole in u.Roles)
+                                        {
+                                            if (roleGroup.Contains(userRole.Name) && roleGroup.Contains(formRole))
+                                            {
+                                                // Get rid of User role to add form Role
+                                                await u.RemoveRoleAsync(userRole);
+                                            }
+                                        }
+                                    }
+                                }
+
                                 roles.AddRange(seperatedRoles);
                             }
 
@@ -157,6 +154,34 @@ namespace DiscordBot
                     }
                 }
             }
+        }
+
+        private static bool FindUsername(IList<object> row, SocketGuildUser u) // Checks if the username from the Google Sheets matches a discord user
+        {
+            string username = "NaN";
+            if (Config.GoogleData.DiscordIDField != -1)
+            {
+                username = row[Config.GoogleData.DiscordIDField].ToString();
+                username = username.Trim(); // trims excess characters
+                username = username.Replace(" ", "");
+                if (username != u.Username + "#" + u.Discriminator &&
+                    username != u.Discriminator &&
+                    username != u.Nickname + "#" +
+                    u.Discriminator // Nickname is here just in case, but it is probably one of the worst ways of doing this since it'll change once the nickname updates
+                ) return false;
+            }
+            else
+            {
+                username = row[0].ToString();
+                username = username.Trim();
+                username = username.Replace(" ", "");
+                if (username != u.Username + "#" + u.Discriminator &&
+                    username != u.Discriminator &&
+                    username != u.Nickname + "#" + u.Discriminator
+                ) return false;
+            }
+
+            return true;
         }
 
         public static async Task CheckSheets(DiscordSocketClient client)

@@ -11,10 +11,13 @@ namespace DiscordBot
 
         private const string GoogleConfFile = ConfPath + "/googleConfig.json";
 
+        private const string RoleConfFile = ConfPath + "/roleGroups.json";
+
         public static BotConfig Bot;
         public static GoogleConfig GoogleData;
+        public static RoleGroupConfig RoleGroup;
 
-        public static bool newBotConfig, newGoogleConfig;
+        public static bool newBotConfig, newGoogleConfig, newRoleGroupConfig;
 
         
 
@@ -28,11 +31,14 @@ namespace DiscordBot
             Console.WriteLine("Loading Configuration Directory...");
             CreateConfigDirectory();
 
-            Console.WriteLine("Loading Bot Configuration file...");
+            Console.WriteLine("Loading Bot Configuration...");
             CreateConfigFiles();
 
-            Console.WriteLine("Loading Google Configuration File...");
+            Console.WriteLine("Loading Google Configuration...");
             CreateGoogleConfigFiles();
+
+            Console.WriteLine("Loading Role Group Configuration...");
+            CreateRoleGroupConfigFiles();
         }
 
         private static void CreateConfigFiles()
@@ -132,12 +138,49 @@ namespace DiscordBot
 
         }
 
+
+        private static void CreateRoleGroupConfigFiles()
+        {
+            if (!File.Exists(RoleConfFile))
+            {
+                RoleGroup = new RoleGroupConfig
+                {
+                    // Default values for RoleGroupConfig
+                    Groups = new string[5]
+                };
+
+                newRoleGroupConfig = true;
+                string roleJson = JsonConvert.SerializeObject(RoleGroup, Formatting.Indented);
+                File.WriteAllText(RoleConfFile, roleJson);
+            }
+            else
+            {
+                string roleJson = File.ReadAllText(RoleConfFile);
+                try
+                {
+                    RoleGroup = JsonConvert.DeserializeObject<RoleGroupConfig>(roleJson);
+                }
+                catch
+                {
+                    File.Delete(RoleConfFile);
+                    CreateRoleGroupConfigFiles();
+                }
+            }
+        }
+
         private static void CreateConfigDirectory()
         {
             if (!Directory.Exists(ConfPath))
             {
                 Directory.CreateDirectory(ConfPath); //Creates a config folder if it doesn't exist
             }
+        }
+
+        public static string[] DeserializeRoleGroup(string group)
+        {
+            //string group = config.Groups[index];
+            group = group.Replace(" ", "");
+            return group.Split(',');
         }
 
     }
@@ -161,4 +204,10 @@ namespace DiscordBot
         //-2 for the nickname field = no nickname field
         // -2 DOES NOT WORK FOR THE DISCORD ID FIELD, WHICH IS REQUIRED.
     }
+
+    public struct RoleGroupConfig
+    {
+        public string[] Groups; // Used for storing role groups
+    }
+
 }
