@@ -23,7 +23,7 @@ namespace DiscordBot
         {
             _service = new SheetsService(new BaseClientService.Initializer()
             {
-                ApiKey = Config.GoogleData.APIKey,
+                //ApiKey = Config.GoogleData.APIKey,
                 ApplicationName = "Form2Role Bot"
             });
 
@@ -75,8 +75,11 @@ namespace DiscordBot
                             {
                                 string roleName = row[i].ToString();
 
+                                // Go to next cell if there's no role
                                 if (roleName.Equals("None") || roleName.Equals("")) continue;
 
+
+                                //Seperating Roles
                                 string[] seperatedRoles = new string[1];
                                 seperatedRoles[0] = roleName;
 
@@ -90,12 +93,14 @@ namespace DiscordBot
                                     roleName = roleName.Replace(" ", "");
                                     seperatedRoles = roleName.Split('+');
                                 }
-
+                                
                                 roles.AddRange(seperatedRoles);
                             }
 
 
                             List<SocketRole> formattedRoles = new List<SocketRole>();
+
+
 
                             // Roles
                             foreach (string s in roles)

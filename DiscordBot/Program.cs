@@ -1,4 +1,5 @@
-﻿/* Form2Role Bot v0.1.3a2 created by Talios0 (August 4th, 2018)
+﻿/* Form2Role Bot v0.0.0 -> v0.1.3  created by Talios0 (August 4th, 2018)
+ * Form2Role Bot v1.0.0 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)
  * Check the project out on Github: https://github.com/talios0/Form2RoleBot
  * The program uses Newtonsoft's JSON, RogueExceptions' Discord.NET, and the Google Sheets API v4
  */
@@ -25,8 +26,9 @@ namespace DiscordBot
         public async Task StartAsync(string[] args)
         {
             Console.WriteLine("---------------------------------------------------------------------");
-            Console.WriteLine("Form2Role Bot v0.1.3a2");
-            Console.WriteLine("Created by Talios0");
+            Console.WriteLine("Form2Role Bot v1.0.0a1");
+            Console.WriteLine("Originally Created by Talios0");
+            Console.WriteLine("Created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)");
             Console.WriteLine("Check for updates at https://github.com/talios0/Form2RoleBot/releases");
             Console.WriteLine("----------------------------------------------------------------------\n\n");
 
@@ -202,8 +204,7 @@ namespace DiscordBot
                 while (string.IsNullOrWhiteSpace(prefix))
                 {
                     if (i != 1)
-                        Console.WriteLine(
-                            "Please enter a single character to serve as the command prefix. Otherwise, enter one manually in config.json.");
+                        Console.WriteLine("Please enter a single character to serve as the command prefix. Otherwise, enter one manually in config.json.");
 
                     i = 2;
                     Console.Write("Bot Prefix: ");
@@ -221,8 +222,7 @@ namespace DiscordBot
                 while (delay <= 0)
                 {
                     if (i != 2)
-                        Console.WriteLine(
-                            "The delay between checking for updates from the attached Google Sheet, specified in minutes, must be greater than 0. This value can be changed manually in config.json.");
+                        Console.WriteLine("The delay between checking for updates from the attached Google Sheet, specified in minutes, must be greater than 0. This value can be changed manually in config.json.");
 
                     Console.Write("Delay (in minutes): ");
                     string value = Console.ReadLine();
