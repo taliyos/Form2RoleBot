@@ -76,6 +76,23 @@ namespace DiscordBot
                                     seperatedRoles = roleName.Split('+');
                                 }
 
+                                foreach (string role in seperatedRoles)
+                                {
+                                    bool roleFound = false;
+                                    foreach (SocketRole dRole in g.Roles)
+                                    {
+                                        if (dRole.Name.Equals(role))
+                                        {
+                                            roleFound = true;
+                                            continue;
+                                        }
+                                    }
+                                    if(!roleFound)
+                                    {
+                                        await g.CreateRoleAsync(role);
+                                    }
+                                }
+
                                 foreach (string formRole in seperatedRoles)
                                 {
                                     foreach (string roleGroup in Config.RoleGroup.Groups)
