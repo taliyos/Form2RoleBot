@@ -1,15 +1,15 @@
 ﻿/* Form2Role Bot v0.0.0 -> v0.1.3  created by Talios0 (August 4th, 2018)
  * Form2Role Bot v1.0.0 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)
  * Check the project out on Github: https://github.com/talios0/Form2RoleBot
- * The program uses Newtonsoft's JSON, RogueExceptions' Discord.NET, and the Google Sheets API v4
+ * The program uses Newtonsoft's JSON, RogueExceptions' Discord.NET, and Google Sheets API v4
  */
 
 
 using System;
 using System.Threading.Tasks;
+using System.Windows;
 using Discord;
 using Discord.WebSocket;
-using Google.Apis.Sheets.v4.Data;
 
 namespace DiscordBot
 {
@@ -18,22 +18,43 @@ namespace DiscordBot
         private DiscordSocketClient _client;
         private CommandHandler _handler;
 
-        private const string Version = "1.0.0a1";
+        private static bool oneTimeCMD = false;
 
+        private const string Version = "1.0.0a2";
+
+        [STAThread]
         private static void Main(string[] args)
-            => new Program().StartAsync(args).GetAwaiter().GetResult();
+        {
+            new Program().StartAsync(args).GetAwaiter().GetResult();
+        }
 
         public async Task StartAsync(string[] args)
         {
-            Console.WriteLine("---------------------------------------------------------------------");
-            Console.WriteLine("Form2Role Bot v1.0.0a1");
-            Console.WriteLine("Originally Created by Talios0");
-            Console.WriteLine("Created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)");
-            Console.WriteLine("Check for updates at https://github.com/talios0/Form2RoleBot/releases");
-            Console.WriteLine("----------------------------------------------------------------------\n\n");
+            About(args); // Initial startup text
 
-            StartArgsHandler(args);
+            if (!oneTimeCMD && !Config.Bot.CMDMode)
+            {
+                CreateWindow(); // Creates the main GUI window
+                Environment.Exit(-1);
+            }
 
+            Console.WriteLine("RUNNING IN CMD-EXCLUSIVE MODE");
+
+            await CreateBot();
+
+            Console.WriteLine("\n");
+
+            await Sheets.UpdateRoles(_client); // forces update initially on all servers
+
+            while (true)
+            {
+                await Task.Delay(Config.Bot.UpdateDelay * 60000); // delay in minutes
+                await Sheets.CheckSheets(_client);
+            }
+        }
+
+        public async Task CreateBot()
+        {
             RequestConfig();
             RequestGoogleConfig();
 
@@ -41,6 +62,7 @@ namespace DiscordBot
             Console.WriteLine("Bot Token: " + Config.Bot.Token);
             Console.WriteLine("Bot Prefix: " + Config.Bot.Prefix);
 
+            //DiscordSocketClient _client;
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
                 LogLevel = LogSeverity.Info
@@ -51,21 +73,27 @@ namespace DiscordBot
             await _client.StartAsync();
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
-
-
-            await Task.Delay(2500); // delay so update roles doesn't run before connecting to server.
-
-            Console.WriteLine("\n");
-            await Sheets.UpdateRoles(_client); // forces update initially on all servers
-
-            while (true)
-            {
-                await Task.Delay(Config.Bot.UpdateDelay * 60000); // delay in minutes
-                await Sheets.CheckSheets(_client);
-            }
         }
 
-        private void RequestGoogleConfig()
+        private static void About(string[] args)
+        {
+            Console.WriteLine("---------------------------------------------------------------------");
+            Console.WriteLine("Form2Role Bot v1.0.0a2");
+            Console.WriteLine("Originally Created by Talios0");
+            Console.WriteLine("Created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)");
+            Console.WriteLine("Check for updates at https://github.com/talios0/Form2RoleBot/releases");
+            Console.WriteLine("----------------------------------------------------------------------\n\n");
+
+            StartArgsHandler(args);
+        }
+
+        private static void CreateWindow()
+        {
+            Application window = new Application();
+            window.Run(new MainWindow());
+        }
+
+        public static void RequestGoogleConfig()
         {
             if (Config.newGoogleConfig || Config.GoogleData.APIKey == null)
             {
@@ -182,7 +210,7 @@ namespace DiscordBot
 
         }
 
-        private static void RequestConfig()
+        public static void RequestConfig()
         {
             if (Config.newBotConfig || Config.Bot.Token == null)
             {
@@ -237,7 +265,7 @@ namespace DiscordBot
                     int.TryParse(value, out delay);
                 }
 
-                Config.WriteToConfig(token, prefix, delay);
+                Config.WriteToConfig(token, prefix, delay, false);
             }
         }
 
@@ -263,11 +291,15 @@ namespace DiscordBot
                 }
                 else if (s.Equals("--help"))
                 {
-                    Console.WriteLine("Check the GitHub repository for help. If a bug is encontered, submit an issue on the repo.");
+                    Console.WriteLine("Check the GitHub repository for help. If a bug is encontered, submit an issue on the repository.");
                 }
                 else if (s.Equals("--who"))
                 {
-                    Console.WriteLine("Created by Talios0");
+                    Console.WriteLine("Originally Created by Talios0. Version v1.0.0 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O.");
+                }
+                else if (s.Equals("--cmd"))
+                {
+                    oneTimeCMD = true;
                 }
             }
             Environment.Exit(0);

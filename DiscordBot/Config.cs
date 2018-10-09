@@ -50,7 +50,8 @@ namespace DiscordBot
                     // Default values for BotConfig
                     Token = null,
                     Prefix = "!",
-                    UpdateDelay = 60 // 1 hour default
+                    UpdateDelay = 60, // 1 hour default
+                    CMDMode = false
                 };
 
                 newBotConfig = true;
@@ -72,13 +73,14 @@ namespace DiscordBot
             }
         }
 
-        public static void WriteToConfig(string token, string prefix, int delay)
+        public static void WriteToConfig(string token, string prefix, int delay, bool cmdMode)
         {
             Bot = new BotConfig()
             {
                 Token = token,
                 Prefix = prefix,
-                UpdateDelay = delay
+                UpdateDelay = delay,
+                CMDMode = cmdMode
             };
 
             string botJson = JsonConvert.SerializeObject(Bot, Formatting.Indented);
@@ -190,6 +192,7 @@ namespace DiscordBot
         public string Token; // Get this from discordapp.com/developers (this is also where you can add the bot to a server)
         public string Prefix; // The character required to send a command
         public int UpdateDelay; // Delay between checking for updates (in minutes)
+        public bool CMDMode; // Controls whether or not the program will run in CMD mode or GUI mode
     }
 
     public struct GoogleConfig // Get the API Key from console.developers.google.com and make a sheets api and key. Get the sheets id from the google sheet (make one from a google form)
