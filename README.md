@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/talios0/Form2RoleBot.svg?branch=master)](https://travis-ci.com/talios0/Form2RoleBot)
+
 # Form2RoleBot
 
 ## About
