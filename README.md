@@ -56,7 +56,7 @@ The prefix is the character that comes before a command. By default, the prefix 
 `"Prefix": "!",`
 
 #### UpdateDelay
-The delay between checking for updates to the provided Google Sheet. This is a number specfied in seconds.
+The delay between checking for updates to the provided Google Sheet. This is a number specfied in minutes.
 
 `"UpdateDelay": 3600`
 
