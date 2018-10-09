@@ -1,0 +1,4 @@
+language: csharp
+solution: DiscordBot/DiscordBot.sln
+mono:
+  - latest
