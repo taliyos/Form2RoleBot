@@ -33,7 +33,7 @@ namespace DiscordBot
             _previousSheetValues = responses.Values;
 
             await AssignRoles(client, _previousSheetValues);
-           
+
         }
 
         private static async Task AssignRoles(DiscordSocketClient client, IList<IList<Object>> values)
@@ -51,154 +51,54 @@ namespace DiscordBot
                             if (!FindUsername(row, u)) continue;
 
                             Console.WriteLine("\nUpdating Roles for " + u.Username + "#" + u.Discriminator);
-                            List<string> roles = new List<string>();
+                            List<string> allUserRoles = new List<string>(); // All of the rolls that need to be assigned to the user
 
-                            for (int i = Config.GoogleData.RolesStartAfter; i < row.Count - 1 - Config.GoogleData.RolesEndBefore; i++) // Loops through each role and which will be added to the user
+                            // Gets all rolls that need to be assigned to the user in addition to removing those that interfere with roleGroups.json
+                            for (int i = Config.GoogleData.RolesStartAfter; i < row.Count - 1 - Config.GoogleData.RolesEndBefore; i++) 
                             {
                                 string roleName = row[i].ToString();
 
-                                // Go to next cell if there's no role
+                                // Go to the next cell if there's no role
                                 if (roleName.Equals("None") || roleName.Equals("")) continue;
 
 
-                                //Seperating Roles
-                                string[] seperatedRoles = new string[1];
-                                seperatedRoles[0] = roleName;
-
-                                if (roleName.Contains(","))
-                                {
-                                    roleName = roleName.Replace(" ", "");
-                                    seperatedRoles = roleName.Split(',');
-                                }
-                                else if (roleName.Contains("+"))
-                                {
-                                    roleName = roleName.Replace(" ", "");
-                                    seperatedRoles = roleName.Split('+');
-                                }
-
-                                foreach (string role in seperatedRoles)
-                                {
-                                    bool roleFound = false;
-                                    foreach (SocketRole dRole in g.Roles)
-                                    {
-                                        if (dRole.Name.Equals(role))
-                                        {
-                                            roleFound = true;
-                                            continue;
-                                        }
-                                    }
-                                    if(!roleFound)
-                                    {
-                                        await g.CreateRoleAsync(role);
-                                    }
-                                }
+                                //Seperates roles into an array
+                                string[] seperatedRoles = SheetsFunctionality.SeperateRoles(roleName);
 
                                 foreach (string formRole in seperatedRoles)
                                 {
-                                    foreach (string roleGroup in Config.RoleGroup.Groups)
-                                    {
-                                        foreach (SocketRole userRole in u.Roles)
-                                        {
-                                            if (roleGroup.Contains(userRole.Name) && roleGroup.Contains(formRole))
-                                            {
-                                                // Get rid of User role to add form Role
-                                                await u.RemoveRoleAsync(userRole);
-                                            }
-                                        }
-                                    }
+                                    //await SheetsFunctionality.CheckAndCreateRole(g, formRole); // A new role is created if it doesn't exist (This is now done when formatting roles)
+
+                                    await SheetsFunctionality.RemoveRole(u, formRole); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
                                 }
 
-                                roles.AddRange(seperatedRoles);
+                                allUserRoles.AddRange(seperatedRoles);
                             }
-
 
                             List<SocketRole> formattedRoles = new List<SocketRole>();
 
-
-
-                            // Roles
-                            foreach (string s in roles)
+                            // Google Sheets data to SocketRole
+                            foreach (string s in allUserRoles)
                             {
-                                formattedRoles.Add(g.Roles.FirstOrDefault(x => x.Name == s)); // adds the first found role matching the name or none at all
-                            }
-
-                                //Add Roles To User
-                            try
-                            {
-                                await u.AddRolesAsync(formattedRoles.ToArray());
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("An error occurred while assigning roles: " + e);
-                            }
-
-                            // Change Nickname
-                            if (Config.GoogleData.NicknameField == -2)
-                            {
-                                // No Nickname field
-                                return;
-                            }
-                            if (Config.GoogleData.NicknameField != -1)
-                            {
-                                try
+                                SocketRole role = g.Roles.FirstOrDefault(x => x.Name == s);
+                                if (role == default(SocketRole))
                                 {
-                                    await u.ModifyAsync(x =>
-                                    {
-                                        x.Nickname = row[Config.GoogleData.NicknameField].ToString();
-                                    });
+                                    role = await SheetsFunctionality.CreateRole(g, s);
+                                    Console.WriteLine("Creating Role...");
                                 }
-                                catch
-                                {
-                                    Console.WriteLine("No nickname specified or their rank is too high.");
-                                }
+                                formattedRoles.Add(role);
                             }
 
-                            else
-                            {
-                                try
-                                {
-                                    await u.ModifyAsync(x =>
-                                    {
-                                        x.Nickname = row[row.Count-1].ToString();
-                                    });
-                                }
-                                catch
-                                {
-                                    Console.WriteLine("No nickname specified or their rank is too high.");
-                                }
-                            }
+                            // Add Roles To User
+                            await u.AddRolesAsync(formattedRoles.ToArray());
+
+                            // Find and set nickname
+                            await SheetsFunctionality.FindAndSetNickname(u, row);
+
                         }
                     }
                 }
             }
-        }
-
-        private static bool FindUsername(IList<object> row, SocketGuildUser u) // Checks if the username from the Google Sheets matches a discord user
-        {
-            string username = "NaN";
-            if (Config.GoogleData.DiscordIDField != -1)
-            {
-                username = row[Config.GoogleData.DiscordIDField].ToString();
-                username = username.Trim(); // trims excess characters
-                username = username.Replace(" ", "");
-                if (username != u.Username + "#" + u.Discriminator &&
-                    username != u.Discriminator &&
-                    username != u.Nickname + "#" +
-                    u.Discriminator // Nickname is here just in case, but it is probably one of the worst ways of doing this since it'll change once the nickname updates
-                ) return false;
-            }
-            else
-            {
-                username = row[0].ToString();
-                username = username.Trim();
-                username = username.Replace(" ", "");
-                if (username != u.Username + "#" + u.Discriminator &&
-                    username != u.Discriminator &&
-                    username != u.Nickname + "#" + u.Discriminator
-                ) return false;
-            }
-
-            return true;
         }
 
         public static async Task CheckSheets(DiscordSocketClient client)

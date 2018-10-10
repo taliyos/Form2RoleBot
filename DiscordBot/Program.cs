@@ -1,15 +1,13 @@
 ﻿/* Form2Role Bot v0.0.0 -> v0.1.3  created by Talios0 (August 4th, 2018)
- * Form2Role Bot v1.0.0 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)
+ * Form2Role Bot v0.2.0 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)
  * Check the project out on Github: https://github.com/talios0/Form2RoleBot
- * The program uses Newtonsoft's JSON, RogueExceptions' Discord.NET, and the Google Sheets API v4
+ * This program uses Newtonsoft's JSON, RogueExceptions' Discord.NET, and Google Sheets API v4
  */
-
 
 using System;
 using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
-using Google.Apis.Sheets.v4.Data;
 
 namespace DiscordBot
 {
@@ -18,7 +16,7 @@ namespace DiscordBot
         private DiscordSocketClient _client;
         private CommandHandler _handler;
 
-        private const string Version = "1.0.0a1";
+        private const string Version = "0.2.0a2";
 
         private static void Main(string[] args)
             => new Program().StartAsync(args).GetAwaiter().GetResult();
@@ -26,9 +24,9 @@ namespace DiscordBot
         public async Task StartAsync(string[] args)
         {
             Console.WriteLine("---------------------------------------------------------------------");
-            Console.WriteLine("Form2Role Bot v1.0.0a1");
+            Console.WriteLine("Form2Role Bot v" + Version);
             Console.WriteLine("Originally Created by Talios0");
-            Console.WriteLine("Created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)");
+            Console.WriteLine("Newest version created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)");
             Console.WriteLine("Check for updates at https://github.com/talios0/Form2RoleBot/releases");
             Console.WriteLine("----------------------------------------------------------------------\n\n");
 
