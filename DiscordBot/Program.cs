@@ -51,7 +51,7 @@ namespace DiscordBot
             await _handler.InitializeAsync(_client);
 
 
-            await Task.Delay(2500); // delay so update roles doesn't run before connecting to server.
+            //await Task.Delay(2500); // delay so update roles doesn't run before connecting to server.
 
             Console.WriteLine("\n");
             await Sheets.UpdateRoles(_client); // forces update initially on all servers
