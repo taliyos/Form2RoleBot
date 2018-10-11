@@ -9,7 +9,7 @@ namespace DiscordBot
 {
     class SheetsFunctionality
     {
-        private static bool FindUsername(SocketGuildUser user, IList<object> userCell) // Checks if the username from the Google Sheets matches a discord user
+        public static bool FindUsername(SocketGuildUser user, IList<object> userCell) // Checks if the username from the Google Sheets matches a discord user
         {
             string username = "NaN";
             if (Config.GoogleData.DiscordIDField != -1)
@@ -69,7 +69,7 @@ namespace DiscordBot
             }
             if (!roleFound)
             {
-                await g.CreateRoleAsync(role);
+                await guild.CreateRoleAsync(role);
             }
         }
 
@@ -102,7 +102,7 @@ namespace DiscordBot
                 return;
 
             if (Config.GoogleData.NicknameField != -1)
-                nickname = userCell.[Config.GoogleData.NicknameField].ToString();
+                nickname = userCell[Config.GoogleData.NicknameField].ToString();
             else
                 nickname = userCell[userCell.Count - 1].ToString();
 

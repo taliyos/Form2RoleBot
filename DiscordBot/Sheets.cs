@@ -48,7 +48,7 @@ namespace DiscordBot
                     {
                         foreach (var row in values)
                         {
-                            if (!FindUsername(row, u)) continue;
+                            if (!SheetsFunctionality.FindUsername(u, row)) continue;
 
                             Console.WriteLine("\nUpdating Roles for " + u.Username + "#" + u.Discriminator);
                             List<string> allUserRoles = new List<string>(); // All of the rolls that need to be assigned to the user
@@ -84,7 +84,6 @@ namespace DiscordBot
                                 if (role == default(SocketRole))
                                 {
                                     role = await SheetsFunctionality.CreateRole(g, s);
-                                    Console.WriteLine("Creating Role...");
                                 }
                                 formattedRoles.Add(role);
                             }
