@@ -54,7 +54,7 @@ namespace DiscordBot
                             List<string> allUserRoles = new List<string>(); // All of the rolls that need to be assigned to the user
 
                             // Gets all rolls that need to be assigned to the user in addition to removing those that interfere with roleGroups.json
-                            for (int i = Config.GoogleData.RolesStartAfter; i < row.Count - 1 - Config.GoogleData.RolesEndBefore; i++) 
+                            for (int i = Config.GoogleData.RolesStartAfter; i < row.Count - Config.GoogleData.RolesEndBefore; i++)
                             {
                                 string roleName = row[i].ToString();
 
@@ -89,7 +89,7 @@ namespace DiscordBot
                             }
 
                             // Add Roles To User
-                            await u.AddRolesAsync(formattedRoles.ToArray());
+                            await SheetsFunctionality.AddRolesToUser(u, formattedRoles.ToArray());
 
                             // Find and set nickname
                             await SheetsFunctionality.FindAndSetNickname(u, row);

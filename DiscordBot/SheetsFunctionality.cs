@@ -124,7 +124,19 @@ namespace DiscordBot
                 // occurs when the user is ranked above the bot
                 Console.WriteLine("No nickname was specified or their rank is too high.");
             }
+        }
 
+        public static async Task AddRolesToUser(SocketGuildUser user, SocketRole[] roles)
+        {
+            List<SocketRole> updatedRoles = roles.ToList();
+            foreach (SocketRole role in roles) // gets rid of roles the user already has to help prevent discord limits
+            {
+                if (user.Roles.Contains(role))
+                {
+                    updatedRoles.Remove(role);
+                }
+            }
+            await user.AddRolesAsync(updatedRoles);
         }
     }
 }
