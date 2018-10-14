@@ -38,45 +38,30 @@ namespace DiscordBot
 
         private static async Task AssignRoles(DiscordSocketClient client, IList<IList<Object>> values)
         {
-
             if (values != null && values.Count > 0)
             {
                 foreach (SocketGuild g in client.Guilds) // Updates for every guild the bot is registered in. Take note that this will quickly hit a discord limit. This is fine, it will resume after a few seconds.
                 {
+                    Dictionary<SocketGuildUser,IList<object>> redoUsers = new Dictionary<SocketGuildUser,IList<object>>();
+                    
                     Console.WriteLine("\n\nUpdating roles in " + g.Name + ".");
                     foreach (SocketGuildUser u in g.Users)
                     {
-                        foreach (var row in values)
+                        foreach (IList<object> row in values)
                         {
                             if (!SheetsFunctionality.FindUsername(u, row)) continue;
+
+                            await SheetsFunctionality.StoreUserID(u);
 
                             Console.WriteLine("\nUpdating Roles for " + u.Username + "#" + u.Discriminator);
                             List<string> allUserRoles = new List<string>(); // All of the rolls that need to be assigned to the user
 
-                            // Gets all rolls that need to be assigned to the user in addition to removing those that interfere with roleGroups.json
-                            for (int i = Config.GoogleData.RolesStartAfter; i < row.Count - Config.GoogleData.RolesEndBefore; i++)
-                            {
-                                string roleName = row[i].ToString();
-
-                                // Go to the next cell if there's no role
-                                if (roleName.Equals("None") || roleName.Equals("")) continue;
-
-
-                                //Seperates roles into an array
-                                string[] seperatedRoles = SheetsFunctionality.SeperateRoles(roleName);
-
-                                foreach (string formRole in seperatedRoles)
-                                {
-                                    //await SheetsFunctionality.CheckAndCreateRole(g, formRole); // A new role is created if it doesn't exist (This is now done when formatting roles)
-
-                                    await SheetsFunctionality.RemoveRole(u, formRole); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
-                                }
-
-                                allUserRoles.AddRange(seperatedRoles);
-                            }
+                            // Gets all roles that need to be assigned to the user in addition to removing those that interfere with roleGroups.json
+                            allUserRoles = await SheetsFunctionality.GetRoles(row, u);
 
                             List<SocketRole> formattedRoles = new List<SocketRole>();
 
+                            bool redo = false;
                             // Google Sheets data to SocketRole
                             foreach (string s in allUserRoles)
                             {
@@ -84,22 +69,44 @@ namespace DiscordBot
                                 if (role == default(SocketRole))
                                 {
                                     role = await SheetsFunctionality.CreateRole(g, s);
+                                    redo = true;
                                 }
                                 formattedRoles.Add(role);
                             }
+                            // Add user to list of roles to redo
+                            if (redo) redoUsers.Add(u, row);
 
                             // Add Roles To User
                             await SheetsFunctionality.AddRolesToUser(u, formattedRoles.ToArray());
 
                             // Find and set nickname
                             await SheetsFunctionality.FindAndSetNickname(u, row);
-
+                            Console.WriteLine("DONE");
                         }
+
+                        Console.WriteLine("REASSIGNIGN NEW ROLES");
+                        await AssignNewRoles(g, redoUsers);
                     }
                 }
+
             }
         }
 
+        public static async Task AssignNewRoles(SocketGuild guild, Dictionary<SocketGuildUser,IList<object>> users)
+        {
+            foreach (KeyValuePair<SocketGuildUser, IList<object>> user in users)
+            {
+                List<string> allRoles = await SheetsFunctionality.GetRoles(user.Value, user.Key);
+                List<SocketRole> mappedRoles = new List<SocketRole>();
+                foreach (string s in allRoles)
+                {
+                    SocketRole role = guild.Roles.FirstOrDefault(x => x.Name == s);
+                    mappedRoles.Add(role);
+                }
+
+                await SheetsFunctionality.AddRolesToUser(user.Key, mappedRoles.ToArray());
+            }
+        }
         public static async Task CheckSheets(DiscordSocketClient client)
         {
 

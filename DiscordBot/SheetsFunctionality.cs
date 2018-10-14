@@ -1,8 +1,8 @@
 ﻿using Discord.WebSocket;
+using Google.Apis.Sheets.v4;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DiscordBot
@@ -76,7 +76,7 @@ namespace DiscordBot
         public static async Task<SocketRole> CreateRole(SocketGuild guild, string role)
         {
             await guild.CreateRoleAsync(role);
-            return guild.Roles.First(x => x.Name == role);
+            return guild.Roles.FirstOrDefault(x => x.Name == role);
         }
 
         public static async Task RemoveRole(SocketGuildUser user, string role)
@@ -93,6 +93,33 @@ namespace DiscordBot
                 }
             }
         }
+
+        public static async Task<List<string>> GetRoles(IList<object> userData, SocketGuildUser user)
+        {
+            List<string> allUserRoles = new List<string>();
+            for (int i = Config.GoogleData.RolesStartAfter; i < userData.Count - Config.GoogleData.RolesEndBefore; i++)
+            {
+                string roleName = userData[i].ToString();
+
+                // Goto the next cell if there's no role
+                if (roleName.Equals("None") || roleName.Equals("")) continue;
+
+
+                //Seperates roles into an array
+                string[] seperatedRoles = SeperateRoles(roleName);
+
+                foreach (string formRole in seperatedRoles)
+                {
+                    //await SheetsFunctionality.CheckAndCreateRole(g, formRole); // A new role is created if it doesn't exist (This is now done when formatting roles)
+
+                    await RemoveRole(user, formRole); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
+                }
+
+                allUserRoles.AddRange(seperatedRoles);
+            }
+            return allUserRoles;
+        }
+
 
         public static async Task FindAndSetNickname(SocketGuildUser user, IList<object> userCell)
         {
@@ -137,6 +164,11 @@ namespace DiscordBot
                 }
             }
             await user.AddRolesAsync(updatedRoles);
+        }
+
+        public static async Task StoreUserID(SocketGuildUser user)
+        {
+            
         }
     }
 }

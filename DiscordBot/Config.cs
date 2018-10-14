@@ -12,10 +12,12 @@ namespace DiscordBot
         private const string GoogleConfFile = ConfPath + "/googleConfig.json";
 
         private const string RoleConfFile = ConfPath + "/roleGroups.json";
+        private const string IDsFile = ConfPath + "/DiscordIDs/userIDs.json";
 
         public static BotConfig Bot;
         public static GoogleConfig GoogleData;
         public static RoleGroupConfig RoleGroup;
+        public static DiscordIDs UserIDs;
 
         public static bool newBotConfig, newGoogleConfig, newRoleGroupConfig;
 
@@ -39,6 +41,9 @@ namespace DiscordBot
 
             Console.WriteLine("Loading Role Group Configuration...");
             CreateRoleGroupConfigFiles();
+
+            Console.WriteLine("Loading User IDs...");
+            //CreateDiscordIDs();
         }
 
         private static void CreateConfigFiles()
@@ -208,6 +213,11 @@ namespace DiscordBot
     public struct RoleGroupConfig
     {
         public string[] Groups; // Used for storing role groups
+    }
+
+    public struct DiscordIDs
+    {
+        public string[] IDs;
     }
 
 }
