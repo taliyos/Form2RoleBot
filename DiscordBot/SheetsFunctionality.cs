@@ -97,7 +97,7 @@ namespace DiscordBot
         public static async Task<List<string>> GetRoles(IList<object> userData, SocketGuildUser user)
         {
             List<string> allUserRoles = new List<string>();
-            for (int i = Config.GoogleData.RolesStartAfter; i < userData.Count - Config.GoogleData.RolesEndBefore; i++)
+            for (int i = Config.GoogleData.RolesStartAfter; i < userData.Count - Config.GoogleData.RolesEndBefore - 1; i++)
             {
                 string roleName = userData[i].ToString();
 

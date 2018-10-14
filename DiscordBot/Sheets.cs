@@ -81,10 +81,9 @@ namespace DiscordBot
 
                             // Find and set nickname
                             await SheetsFunctionality.FindAndSetNickname(u, row);
-                            Console.WriteLine("DONE");
+                            //Console.WriteLine("DONE");
                         }
 
-                        Console.WriteLine("REASSIGNIGN NEW ROLES");
                         await AssignNewRoles(g, redoUsers);
                     }
                 }
