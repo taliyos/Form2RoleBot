@@ -49,9 +49,10 @@ namespace DiscordBot
                     {
                         foreach (IList<object> row in values)
                         {
+                            //Console.WriteLine("Checking user");
                             if (!SheetsFunctionality.FindUsername(u, row)) continue;
 
-                            await SheetsFunctionality.StoreUserID(u);
+                            //await SheetsFunctionality.StoreUserID(u);
 
                             Console.WriteLine("\nUpdating Roles for " + u.Username + "#" + u.Discriminator);
                             List<string> allUserRoles = new List<string>(); // All of the rolls that need to be assigned to the user

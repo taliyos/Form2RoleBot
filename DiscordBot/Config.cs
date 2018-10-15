@@ -44,7 +44,7 @@ namespace DiscordBot
             CreateRoleGroupConfigFiles();
 
             Console.WriteLine("Loading User IDs...");
-            CreateDiscordIDs();
+            //CreateDiscordIDs();
         }
 
         private static void CreateConfigFiles()
@@ -102,7 +102,7 @@ namespace DiscordBot
                 };
                 
                 newUserIDs = true;
-                string userJson = JsonConvert.SerializeObject(Bot, Formatting.Indented);
+                string userJson = JsonConvert.SerializeObject(UserIDs, Formatting.Indented);
                 File.WriteAllText(IDsFile, userJson);
             }
             else
