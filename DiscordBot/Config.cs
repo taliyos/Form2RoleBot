@@ -13,7 +13,7 @@ namespace DiscordBot
         private const string GoogleConfFile = ConfPath + "/googleConfig.json";
 
         private const string RoleConfFile = ConfPath + "/roleGroups.json";
-        private const string IDsFile = ConfPath + "/DiscordIDs/userIDs.json";
+        private const string IDsFile = ConfPath + "/userIDs.json";
 
         public static BotConfig Bot;
         public static GoogleConfig GoogleData;
