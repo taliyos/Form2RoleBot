@@ -80,7 +80,7 @@ namespace DiscordBot
             return guild.Roles.FirstOrDefault(x => x.Name == role);
         }
 
-        public static async Task RemoveRole(SocketGuildUser user, string role)
+        public static async Task MatchRoleGroups(SocketGuildUser user, string role)
         {
             foreach (string roleGroup in Config.RoleGroup.Groups)
             {
@@ -98,6 +98,8 @@ namespace DiscordBot
         public static async Task<List<string>> GetRoles(IList<object> userData, SocketGuildUser user)
         {
             List<string> allUserRoles = new List<string>();
+            List<string> finalizedUserRoles = new List<string>();
+            SocketRole[] assignedRoles = user.Roles.ToArray();
             for (int i = Config.GoogleData.RolesStartAfter; i < userData.Count - Config.GoogleData.RolesEndBefore; i++)
             {
                 string roleName = userData[i].ToString();
@@ -112,13 +114,31 @@ namespace DiscordBot
                 foreach (string formRole in seperatedRoles)
                 {
                     //await SheetsFunctionality.CheckAndCreateRole(g, formRole); // A new role is created if it doesn't exist (This is now done when formatting roles)
-
-                    await RemoveRole(user, formRole); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
+                    //Console.WriteLine("Role removed " + formRole);
+                    await MatchRoleGroups(user, formRole); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
                 }
+
 
                 allUserRoles.AddRange(seperatedRoles);
             }
-            return allUserRoles;
+            //finalizedUserRoles = allUserRoles;
+            foreach (string role in allUserRoles)
+            {
+                finalizedUserRoles.Add(role);
+            }
+            /*foreach (SocketRole assignedRole in assignedRoles)
+            {
+                foreach (string userRole in allUserRoles)
+                {
+                    if (userRole == assignedRole.Name)
+                    {
+                        Console.WriteLine("REMOVING " + userRole);
+                        finalizedUserRoles.Remove(userRole);
+                    }
+                }
+            }*/
+            return finalizedUserRoles;
+            //return allUserRoles;
         }
 
 
