@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -19,7 +20,7 @@ namespace DiscordBot
         public static RoleGroupConfig RoleGroup;
         public static DiscordIDs UserIDs;
 
-        public static bool newBotConfig, newGoogleConfig, newRoleGroupConfig;
+        public static bool newBotConfig, newGoogleConfig, newRoleGroupConfig, newUserIDs;
 
         
 
@@ -43,7 +44,7 @@ namespace DiscordBot
             CreateRoleGroupConfigFiles();
 
             Console.WriteLine("Loading User IDs...");
-            //CreateDiscordIDs();
+            CreateDiscordIDs();
         }
 
         private static void CreateConfigFiles()
@@ -88,6 +89,49 @@ namespace DiscordBot
 
             string botJson = JsonConvert.SerializeObject(Bot, Formatting.Indented);
             File.WriteAllText(ConfFile, botJson);
+        }
+
+
+        private static void CreateDiscordIDs()
+        {
+            if (!File.Exists(IDsFile))
+            {
+                UserIDs = new DiscordIDs
+                {
+                    IDs = new string[1]
+                };
+                
+                newUserIDs = true;
+                string userJson = JsonConvert.SerializeObject(Bot, Formatting.Indented);
+                File.WriteAllText(IDsFile, userJson);
+            }
+            else
+            {
+                string userJson = File.ReadAllText(IDsFile);
+                try
+                {
+                    Bot = JsonConvert.DeserializeObject<BotConfig>(userJson);
+                }
+                catch
+                {
+                    File.Delete(IDsFile);
+                    CreateDiscordIDs();
+                }
+            }
+        }
+
+        public static void AppendToIDs(string userID)
+        {
+            List<string> IDs = new List<string>();
+
+            foreach (string id in UserIDs.IDs)
+            {
+                IDs.Add(id);
+            }
+            IDs.Add(userID);
+
+            string userJson = JsonConvert.SerializeObject(Bot, Formatting.Indented);
+            File.WriteAllText(IDsFile, userJson);
         }
 
         public static void WriteToGoogleConfig(string apiKey, string spreadsheetID, string range, int rolesStartAfter, int rolesEndBefore, int discordID, int nickname)

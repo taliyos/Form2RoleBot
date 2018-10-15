@@ -1,5 +1,4 @@
 ﻿using Discord.WebSocket;
-using Google.Apis.Sheets.v4;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,8 @@ namespace DiscordBot
         public static bool FindUsername(SocketGuildUser user, IList<object> userCell) // Checks if the username from the Google Sheets matches a discord user
         {
             string username = "NaN";
+
+
             if (Config.GoogleData.DiscordIDField != -1)
             {
                 username = userCell[Config.GoogleData.DiscordIDField].ToString();
@@ -20,7 +21,7 @@ namespace DiscordBot
                 if (username != user.Username + "#" + user.Discriminator &&
                     username != user.Discriminator &&
                     username != user.Nickname + "#" +
-                    user.Discriminator // Nickname is here juserst in case, busert it is probably one of the worst ways of doing this since it'll change once the nickname userpdates
+                    user.Discriminator // Nickname is here just in case, but it is probably one of the worst ways of doing this since it'll change once the nickname userpdates
                 ) return false;
             }
             else
@@ -168,7 +169,7 @@ namespace DiscordBot
 
         public static async Task StoreUserID(SocketGuildUser user)
         {
-            
+            Config.AppendToIDs(user.Id.ToString());
         }
     }
 }
