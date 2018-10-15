@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Discord.WebSocket;
@@ -38,8 +39,7 @@ namespace DiscordBot
 
         private static async Task AssignRoles(DiscordSocketClient client, IList<IList<Object>> values)
         {
-            int startTime = DateTime.Now.Millisecond;
-            Console.WriteLine(startTime);
+            Stopwatch time = Stopwatch.StartNew();
             if (values != null && values.Count > 0)
             {
                 foreach (SocketGuild g in client.Guilds) // Updates for every guild the bot is registered in. Take note that this will quickly hit a discord limit. This is fine, it will resume after a few seconds.
@@ -81,11 +81,6 @@ namespace DiscordBot
                             if (redo) redoUsers.Add(u, row);
 
                             // Add Roles To User
-                            foreach(SocketRole s in formattedRoles)
-                            {
-                                Console.WriteLine("Assigning: " + s.Name);
-                            }
-
                             await SheetsFunctionality.AddRolesToUser(u, formattedRoles.ToArray());
 
                             // Find and set nickname
@@ -98,8 +93,10 @@ namespace DiscordBot
                 }
 
             }
-            int endTime = DateTime.Now.Millisecond;
-            Console.WriteLine(endTime - startTime);
+            //DateTime endTime = DateTime.Now - startTime;
+            //TimeSpan span = TimeSpan.
+            time.Stop();
+            Console.WriteLine(time.ElapsedMilliseconds + "ms\n");
         }
 
         public static async Task AssignNewRoles(SocketGuild guild, Dictionary<SocketGuildUser,IList<object>> users)

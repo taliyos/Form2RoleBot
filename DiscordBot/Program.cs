@@ -1,5 +1,5 @@
 ﻿/* Form2Role Bot v0.0.0 -> v0.1.3  created by Talios0 (August 4th, 2018)
- * Form2Role Bot v0.2.0 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)
+ * Form2Role Bot v0.2.0 and v0.2.1 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)
  * Check the project out on Github: https://github.com/talios0/Form2RoleBot
  * This program uses Newtonsoft's JSON, RogueExceptions' Discord.NET, and Google Sheets API v4
  */
@@ -16,7 +16,7 @@ namespace DiscordBot
         private DiscordSocketClient _client;
         private CommandHandler _handler;
 
-        private const string Version = "0.2.0";
+        private const string Version = "0.2.1";
 
         private static void Main(string[] args)
             => new Program().StartAsync(args).GetAwaiter().GetResult();
@@ -26,7 +26,7 @@ namespace DiscordBot
             Console.WriteLine("---------------------------------------------------------------------");
             Console.WriteLine("Form2Role Bot v" + Version);
             Console.WriteLine("Originally Created by Talios0");
-            Console.WriteLine("Newest version created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)");
+            Console.WriteLine("v0.2.0 and v0.2.1 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)");
             Console.WriteLine("Check for updates at https://github.com/talios0/Form2RoleBot/releases");
             Console.WriteLine("----------------------------------------------------------------------\n\n");
 
@@ -51,7 +51,7 @@ namespace DiscordBot
             await _handler.InitializeAsync(_client);
 
 
-            await Task.Delay(500); // delay so update roles doesn't run before connecting to server.
+            await Task.Delay(750); // delay so update roles doesn't run before connecting to the server.
 
             Console.WriteLine("\n");
             await Sheets.UpdateRoles(_client); // forces update initially on all servers

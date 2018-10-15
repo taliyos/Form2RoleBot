@@ -80,16 +80,48 @@ namespace DiscordBot
             return guild.Roles.FirstOrDefault(x => x.Name == role);
         }
 
-        public static async Task MatchRoleGroups(SocketGuildUser user, string role)
+        public static async Task MatchRoleGroups(SocketGuildUser user, string role, string actualCell)
         {
             foreach (string roleGroup in Config.RoleGroup.Groups)
             {
                 foreach (SocketRole userRole in user.Roles) // Checks all roles assigned to the user
                 {
-                    if (roleGroup.Contains(userRole.Name) && roleGroup.Contains(role)) // Checks for overlapping roles (from roleGroups.json)
+                    if (roleGroup.Contains(userRole.Name + ",") && roleGroup.Contains(role + ",") && role != userRole.Name) // Checks for overlapping roles (from roleGroups.json)
                     {
+                        /*if (actualCell.Contains("+"))
+                        {
+                            bool match = false;
+                            string[] split = actualCell.Split('+');
+                            for (int i = 0; i < split.Length; i++)
+                            {
+                                split[i].Trim();
+                            }
+                            for (int i = 0; i < split.Length; i++)
+                            {
+                                if (userRole.Name.Equals(split[i]))
+                                {
+                                    
+                                } else
+                                {
+                                    match = true;
+                                    break;
+                                }
+                            }
+                            if (match)
+                            {
+                                Console.WriteLine("ROLE GROUP MATCH: " + userRole.Name + ", " + role);
+                                await user.RemoveRoleAsync(userRole);
+                            }
+                        } else
+                        {*/
                         // Removes the user's current role
-                        await user.RemoveRoleAsync(userRole);
+                        if (!actualCell.Contains(userRole.Name) || !actualCell.Contains(role))
+                        {
+                            Console.WriteLine("ROLE GROUP MATCH: " + userRole.Name + ", " + role);
+                            await user.RemoveRoleAsync(userRole);
+                        }
+
+                        //}
                     }
                 }
             }
@@ -98,7 +130,6 @@ namespace DiscordBot
         public static async Task<List<string>> GetRoles(IList<object> userData, SocketGuildUser user)
         {
             List<string> allUserRoles = new List<string>();
-            List<string> finalizedUserRoles = new List<string>();
             SocketRole[] assignedRoles = user.Roles.ToArray();
             for (int i = Config.GoogleData.RolesStartAfter; i < userData.Count - Config.GoogleData.RolesEndBefore; i++)
             {
@@ -115,30 +146,14 @@ namespace DiscordBot
                 {
                     //await SheetsFunctionality.CheckAndCreateRole(g, formRole); // A new role is created if it doesn't exist (This is now done when formatting roles)
                     //Console.WriteLine("Role removed " + formRole);
-                    await MatchRoleGroups(user, formRole); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
+                    await MatchRoleGroups(user, formRole, roleName); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
                 }
 
 
                 allUserRoles.AddRange(seperatedRoles);
             }
-            //finalizedUserRoles = allUserRoles;
-            foreach (string role in allUserRoles)
-            {
-                finalizedUserRoles.Add(role);
-            }
-            /*foreach (SocketRole assignedRole in assignedRoles)
-            {
-                foreach (string userRole in allUserRoles)
-                {
-                    if (userRole == assignedRole.Name)
-                    {
-                        Console.WriteLine("REMOVING " + userRole);
-                        finalizedUserRoles.Remove(userRole);
-                    }
-                }
-            }*/
-            return finalizedUserRoles;
-            //return allUserRoles;
+
+            return allUserRoles;
         }
 
 
@@ -182,6 +197,7 @@ namespace DiscordBot
                 if (user.Roles.Contains(role))
                 {
                     updatedRoles.Remove(role);
+                    //Console.WriteLine("Removing: " + role);
                 }
             }
             await user.AddRolesAsync(updatedRoles);
