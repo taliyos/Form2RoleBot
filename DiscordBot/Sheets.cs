@@ -62,6 +62,7 @@ namespace DiscordBot
 
                             // Gets all roles that need to be assigned to the user in addition to removing those that interfere with roleGroups.json
                             allUserRoles = await SheetsFunctionality.GetRoles(row, u);
+                            //Console.WriteLine("Got Roles");
 
                             List<SocketRole> formattedRoles = new List<SocketRole>();
 
