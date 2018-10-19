@@ -43,13 +43,29 @@ namespace DiscordBot
         {
             if (role.Contains(","))
             {
-                role = role.Replace(" ", "");
-                return role.Split(',');
+                //role = role.Replace(" ", "");
+                role = role.Trim();
+                //Console.WriteLine(role);
+                string[] roles =  role.Split(',');
+                for (int i = 0; i < roles.Length; i++)
+                {
+                    roles[i] = roles[i].Trim();
+                    //Console.WriteLine(roles[i]);
+                }
+                return roles;
             }
             else if (role.Contains("+"))
             {
-                role = role.Replace(" ", "");
-                return role.Split('+');
+                //role = role.Replace(" ", "");
+                role = role.Trim();
+                //Console.WriteLine("+"+role);
+                string[] roles = role.Split('+');
+                for (int i = 0; i < roles.Length; i++)
+                {
+                    roles[i] = roles[i].Trim();
+                    //Console.WriteLine(roles[i]);
+                }
+                return roles;
             }
 
             string[] seperatedRole = new string[1];
@@ -94,8 +110,6 @@ namespace DiscordBot
                             Console.WriteLine("ROLE GROUP MATCH: " + userRole.Name + ", " + role);
                             await user.RemoveRoleAsync(userRole);
                         }
-
-                        //}
                     }
                 }
             }
