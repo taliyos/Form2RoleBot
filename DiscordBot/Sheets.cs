@@ -40,12 +40,14 @@ namespace DiscordBot
         private static async Task AssignRoles(DiscordSocketClient client, IList<IList<Object>> values)
         {
             Stopwatch time = Stopwatch.StartNew();
+            List<SocketGuildUser> pingUsers = new List<SocketGuildUser>();
+            List<SocketGuildUser> notPing = new List<SocketGuildUser>();
             if (values != null && values.Count > 0)
             {
                 foreach (SocketGuild g in client.Guilds) // Updates for every guild the bot is registered in. Take note that this will quickly hit a discord limit. This is fine, it will resume after a few seconds.
                 {
-                    Dictionary<SocketGuildUser,IList<object>> redoUsers = new Dictionary<SocketGuildUser,IList<object>>();
-                    
+                    Dictionary<SocketGuildUser, IList<object>> redoUsers = new Dictionary<SocketGuildUser, IList<object>>();
+
                     Console.WriteLine("\n\nUpdating roles in " + g.Name + ".");
                     SocketGuildUser[] allUsers = g.Users.ToArray();
                     foreach (SocketGuildUser u in allUsers)
@@ -53,8 +55,27 @@ namespace DiscordBot
                         foreach (IList<object> row in values)
                         {
                             //Console.WriteLine("Checking user");
-                            if (!SheetsFunctionality.FindUsername(u, row)) continue;
-
+                            if (!SheetsFunctionality.FindUsername(u, row))
+                            {
+                                if (!notPing.Contains(u))
+                                {
+                                    pingUsers.Add(u);
+                                }
+                                /*try
+                                {
+                                    Console.WriteLine(u.Username);
+                                    await Discord.UserExtensions.SendMessageAsync(u, Config.Bot.PMMessage);
+                                } catch (Exception e)
+                                {
+                                    Console.WriteLine(u.Username);
+                                }*/
+                                continue;
+                            }
+                            while (pingUsers.Contains(u))
+                            {
+                                pingUsers.Remove(u);
+                            }
+                            notPing.Add(u);
                             //await SheetsFunctionality.StoreUserID(u);
 
                             Console.WriteLine("\nUpdating Roles for " + u.Username + "#" + u.Discriminator);
@@ -96,11 +117,28 @@ namespace DiscordBot
             }
             //DateTime endTime = DateTime.Now - startTime;
             //TimeSpan span = TimeSpan.
+            foreach (SocketGuildUser u in pingUsers)
+            {
+                try
+                {
+                    if (!notPing.Contains(u))
+                    {
+                        Console.WriteLine(u.Username);
+                        await Discord.UserExtensions.SendMessageAsync(u, Config.Bot.PMMessage);
+                        notPing.Add(u);
+                    }
+                    
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(u.Username);
+                }
+            }
             time.Stop();
             Console.WriteLine(time.ElapsedMilliseconds + "ms\n");
         }
 
-        public static async Task AssignNewRoles(SocketGuild guild, Dictionary<SocketGuildUser,IList<object>> users)
+        public static async Task AssignNewRoles(SocketGuild guild, Dictionary<SocketGuildUser, IList<object>> users)
         {
             foreach (KeyValuePair<SocketGuildUser, IList<object>> user in users)
             {
