@@ -56,7 +56,9 @@ namespace DiscordBot
                     // Default values for BotConfig
                     Token = null,
                     Prefix = "!",
-                    UpdateDelay = 60 // 1 hour default
+                    UpdateDelay = 60, // 1 hour default
+                    PMUsers = true,
+                    PMMessage = "Welcome to the server!"
                 };
 
                 newBotConfig = true;
@@ -239,6 +241,8 @@ namespace DiscordBot
         public string Token; // Get this from discordapp.com/developers (this is also where you can add the bot to a server)
         public string Prefix; // The character required to send a command
         public int UpdateDelay; // Delay between checking for updates (in minutes)
+        public bool PMUsers; // Whether or not users will be PMed to fill the form upon joining the server.
+        public string PMMessage; // Message sent to new users
     }
 
     public struct GoogleConfig // Get the API Key from console.developers.google.com and make a sheets api and key. Get the sheets id from the google sheet (make one from a google form)

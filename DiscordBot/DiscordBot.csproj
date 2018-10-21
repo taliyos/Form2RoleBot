@@ -288,6 +288,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DiscordSpecificHandler.cs" />
     <Compile Include="Sheets.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Modules\Misc.cs" />
