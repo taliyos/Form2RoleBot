@@ -98,20 +98,28 @@ namespace DiscordBot
 
         public static async Task MatchRoleGroups(SocketGuildUser user, string role, string actualCell)
         {
-            foreach (string roleGroup in Config.RoleGroup.Groups)
+            if (!Config.Bot.UseRoleGroups) return;
+            try
             {
-                foreach (SocketRole userRole in user.Roles) // Checks all roles assigned to the user
+                foreach (string roleGroup in Config.RoleGroup.Groups)
                 {
-                    if (roleGroup.Contains(userRole.Name + ",") && roleGroup.Contains(role + ",") && role != userRole.Name) // Checks for overlapping roles (from roleGroups.json)
+                    foreach (SocketRole userRole in user.Roles) // Checks all roles assigned to the user
                     {
-                        // Removes the user's current role
-                        if (!actualCell.Contains(userRole.Name) || !actualCell.Contains(role))
+                        if (roleGroup.Contains(userRole.Name + ",") && roleGroup.Contains(role + ",") && role != userRole.Name) // Checks for overlapping roles (from roleGroups.json)
                         {
-                            Console.WriteLine("ROLE GROUP MATCH: " + userRole.Name + ", " + role);
-                            await user.RemoveRoleAsync(userRole);
+                            // Removes the user's current role
+                            if (!actualCell.Contains(userRole.Name) || !actualCell.Contains(role))
+                            {
+                                Console.WriteLine("ROLE GROUP MATCH: " + userRole.Name + ", " + role);
+                                await user.RemoveRoleAsync(userRole);
+                            }
                         }
                     }
                 }
+            }
+            catch
+            {
+                Console.WriteLine("\nroleGroups.json is either not set-up or incorrectly configured. Consider changing 'UseRoleGroups' to 'false' in config.json");
             }
         }
 
@@ -175,7 +183,7 @@ namespace DiscordBot
             catch
             {
                 // occurs when the user is ranked above the bot
-                Console.WriteLine("No nickname was specified or their rank is too high.");
+                Console.WriteLine("No nickname specified or their rank is too high.");
             }
         }
 

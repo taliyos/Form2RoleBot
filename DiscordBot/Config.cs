@@ -43,7 +43,7 @@ namespace DiscordBot
             Console.WriteLine("Loading Role Group Configuration...");
             CreateRoleGroupConfigFiles();
 
-            Console.WriteLine("Loading User IDs...");
+            //Console.WriteLine("Loading User IDs...");
             //CreateDiscordIDs();
         }
 
@@ -57,6 +57,7 @@ namespace DiscordBot
                     Token = null,
                     Prefix = "!",
                     UpdateDelay = 60, // 1 hour default
+                    UseRoleGroups = false,
                     PMUsers = true,
                     PMMessage = "Welcome to the server!"
                 };
@@ -241,6 +242,7 @@ namespace DiscordBot
         public string Token; // Get this from discordapp.com/developers (this is also where you can add the bot to a server)
         public string Prefix; // The character required to send a command
         public int UpdateDelay; // Delay between checking for updates (in minutes)
+        public bool UseRoleGroups; // Whether or not to use Role Groups.
         public bool PMUsers; // Whether or not users will be PMed to fill the form upon joining the server.
         public string PMMessage; // Message sent to new users
     }

@@ -16,7 +16,7 @@ namespace DiscordBot
         private DiscordSocketClient _client;
         private CommandHandler _handler;
 
-        private const string Version = "0.2.1";
+        private const string Version = "0.3.0a2";
 
         private static void Main(string[] args)
             => new Program().StartAsync(args).GetAwaiter().GetResult();
@@ -25,7 +25,7 @@ namespace DiscordBot
         {
             Console.WriteLine("---------------------------------------------------------------------");
             Console.WriteLine("Form2Role Bot v" + Version);
-            Console.WriteLine("Originally Created by Talios0");
+            Console.WriteLine("v0.0.0 -> current created by Talios0");
             Console.WriteLine("v0.2.0 and v0.2.1 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)");
             Console.WriteLine("Check for updates at https://github.com/talios0/Form2RoleBot/releases");
             Console.WriteLine("----------------------------------------------------------------------\n\n");
@@ -257,15 +257,36 @@ namespace DiscordBot
             {
                 if (s.Equals("--version"))
                 {
+                    Console.WriteLine("---------------------------------------------------------------------");
                     Console.WriteLine("Form2Role Bot v{0}", Version);
+                    Console.WriteLine("---------------------------------------------------------------------");
                 }
                 else if (s.Equals("--help"))
                 {
-                    Console.WriteLine("Check the GitHub repository for help. If a bug is encontered, submit an issue on the repo.");
+                    Console.WriteLine("---------------------------------------------------------------------");
+                    Console.WriteLine("Check the GitHub repository (https://github.com/talios0/Form2RoleBot/releases) for help. If a bug is encontered, submit an issue on the repo.");
+                    Console.WriteLine("---------------------------------------------------------------------");
                 }
                 else if (s.Equals("--who"))
                 {
-                    Console.WriteLine("Created by Talios0");
+                    Console.WriteLine("---------------------------------------------------------------------");
+                    Console.WriteLine("v0.0.0 -> current Created by Talios0");
+                    Console.WriteLine("v0.2.0 and v0.2.1 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)");
+                    Console.WriteLine("----------------------------------------------------------------------");
+                } else if (s.Equals("--update"))
+                {
+                    Console.WriteLine("---------------------------------------------------------------------");
+                    Console.WriteLine("Check for updates at https://github.com/talios0/Form2RoleBot/releases");
+                    Console.WriteLine("---------------------------------------------------------------------");
+                } else if (s.Equals("--all"))
+                {
+                    Console.WriteLine("---------------------------------------------------------------------");
+                    Console.WriteLine("Form2Role Bot v" + Version);
+                    Console.WriteLine("v0.0.0 -> current created by Talios0");
+                    Console.WriteLine("v0.2.0 and v0.2.1 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)");
+                    Console.WriteLine("Check for updates at https://github.com/talios0/Form2RoleBot/releases");
+                    Console.WriteLine("----------------------------------------------------------------------\n\n");
+
                 }
             }
             Environment.Exit(0);
