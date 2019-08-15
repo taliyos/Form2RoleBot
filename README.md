@@ -120,4 +120,4 @@ You'll find some comments in the code that may help you. (or not, but hey, can't
 ## Other
 When will this be updated? - I don't know.
 
-What will be in future updates? - Roles will be added if they aren't found, Roles will be removed from a user if they have a role they shouldn't.
+What will be in future updates? - Check Issues. 
