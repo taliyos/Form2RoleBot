@@ -16,7 +16,7 @@ namespace DiscordBot
         private DiscordSocketClient _client;
         private CommandHandler _handler;
 
-        private const string Version = "0.2.1";
+        private const string Version = "0.2.1-PMUNFILLEDv1.1";
 
         private static void Main(string[] args)
             => new Program().StartAsync(args).GetAwaiter().GetResult();

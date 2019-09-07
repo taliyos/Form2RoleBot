@@ -49,6 +49,7 @@ namespace DiscordBot
                     Dictionary<SocketGuildUser, IList<object>> redoUsers = new Dictionary<SocketGuildUser, IList<object>>();
 
                     Console.WriteLine("\n\nUpdating roles in " + g.Name + ".");
+                    await g.DownloadUsersAsync();
                     SocketGuildUser[] allUsers = g.Users.ToArray();
                     foreach (SocketGuildUser u in allUsers)
                     {
