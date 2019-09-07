@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json;
 
 namespace DiscordBot
 {
@@ -22,7 +22,7 @@ namespace DiscordBot
 
         public static bool newBotConfig, newGoogleConfig, newRoleGroupConfig, newUserIDs;
 
-        
+
 
         static Config()
         {
@@ -103,7 +103,7 @@ namespace DiscordBot
                 {
                     IDs = new string[1]
                 };
-                
+
                 newUserIDs = true;
                 string userJson = JsonConvert.SerializeObject(UserIDs, Formatting.Indented);
                 File.WriteAllText(IDsFile, userJson);
@@ -185,7 +185,7 @@ namespace DiscordBot
                     CreateGoogleConfigFiles();
                 }
             }
-        
+
 
 
         }

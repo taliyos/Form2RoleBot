@@ -1,12 +1,12 @@
-﻿using System;
+﻿using Discord.WebSocket;
+using Google.Apis.Services;
+using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4.Data;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord.WebSocket;
-using Google.Apis.Services;
-using Google.Apis.Sheets.v4;
-using Google.Apis.Sheets.v4.Data;
 
 namespace DiscordBot
 {
@@ -44,12 +44,15 @@ namespace DiscordBot
             {
                 foreach (SocketGuild g in client.Guilds) // Updates for every guild the bot is registered in. Take note that this will quickly hit a discord limit. This is fine, it will resume after a few seconds.
                 {
-                    Dictionary<SocketGuildUser,IList<object>> redoUsers = new Dictionary<SocketGuildUser,IList<object>>();
-                    
+                    Dictionary<SocketGuildUser, IList<object>> redoUsers = new Dictionary<SocketGuildUser, IList<object>>();
+
                     Console.WriteLine("\n\nUpdating roles in " + g.Name + ".");
+                    await g.DownloadUsersAsync();
                     SocketGuildUser[] allUsers = g.Users.ToArray();
+
                     foreach (SocketGuildUser u in allUsers)
                     {
+                        //Console.WriteLine("Checking roles for: " + u.Username);
                         foreach (IList<object> row in values)
                         {
                             //Console.WriteLine("Checking user");
@@ -57,7 +60,7 @@ namespace DiscordBot
 
                             //await SheetsFunctionality.StoreUserID(u);
 
-                            Console.WriteLine("\nUpdating Roles for " + u.Username + "#" + u.Discriminator);
+                            Console.WriteLine("Updating Roles for " + u.Username + "#" + u.Discriminator);
                             List<string> allUserRoles = new List<string>(); // All of the rolls that need to be assigned to the user
 
                             // Gets all roles that need to be assigned to the user in addition to removing those that interfere with roleGroups.json
@@ -76,6 +79,7 @@ namespace DiscordBot
                                     role = await SheetsFunctionality.CreateRole(g, s);
                                     redo = true;
                                 }
+                                //Console.WriteLine("Adding Role: " + role.ToString());
                                 formattedRoles.Add(role);
                             }
                             // Add user to list of roles to redo
@@ -100,7 +104,7 @@ namespace DiscordBot
             Console.WriteLine(time.ElapsedMilliseconds + "ms\n");
         }
 
-        public static async Task AssignNewRoles(SocketGuild guild, Dictionary<SocketGuildUser,IList<object>> users)
+        public static async Task AssignNewRoles(SocketGuild guild, Dictionary<SocketGuildUser, IList<object>> users)
         {
             foreach (KeyValuePair<SocketGuildUser, IList<object>> user in users)
             {
