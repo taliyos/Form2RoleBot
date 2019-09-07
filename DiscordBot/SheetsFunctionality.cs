@@ -12,12 +12,11 @@ namespace DiscordBot
         {
             string username = "NaN";
 
-
             if (Config.GoogleData.DiscordIDField != -1)
             {
                 username = userCell[Config.GoogleData.DiscordIDField].ToString();
                 username = username.Trim(); // trims excess characters
-                //username = username.Replace(" ", "");
+
                 if (username != user.Username + "#" + user.Discriminator &&
                     username != user.Discriminator &&
                     username != user.Nickname + "#" +
@@ -28,7 +27,7 @@ namespace DiscordBot
             {
                 username = userCell[0].ToString();
                 username = username.Trim();
-                //username = username.Replace(" ", "");
+
                 if (username != user.Username + "#" + user.Discriminator &&
                     username != user.Discriminator &&
                     username != user.Nickname + "#" + user.Discriminator
@@ -43,27 +42,27 @@ namespace DiscordBot
         {
             if (role.Contains(","))
             {
-                //role = role.Replace(" ", "");
+
                 role = role.Trim();
-                //Console.WriteLine(role);
-                string[] roles =  role.Split(',');
+
+                string[] roles = role.Split(',');
                 for (int i = 0; i < roles.Length; i++)
                 {
                     roles[i] = roles[i].Trim();
-                    //Console.WriteLine(roles[i]);
+
                 }
                 return roles;
             }
             else if (role.Contains("+"))
             {
-                //role = role.Replace(" ", "");
+
                 role = role.Trim();
-                //Console.WriteLine("+"+role);
+
                 string[] roles = role.Split('+');
                 for (int i = 0; i < roles.Length; i++)
                 {
                     roles[i] = roles[i].Trim();
-                    //Console.WriteLine(roles[i]);
+
                 }
                 return roles;
             }
@@ -125,7 +124,7 @@ namespace DiscordBot
 
         public static async Task<List<string>> GetRoles(IList<object> userData, SocketGuildUser user)
         {
-            //Console.WriteLine("Getting Roles");
+
             List<string> allUserRoles = new List<string>();
             SocketRole[] assignedRoles = user.Roles.ToArray();
             for (int i = Config.GoogleData.RolesStartAfter; i < userData.Count - Config.GoogleData.RolesEndBefore; i++)
@@ -134,17 +133,14 @@ namespace DiscordBot
 
                 // Goto the next cell if there's no role
                 if (roleName.Equals("None") || roleName.Equals("")) continue;
-                //Console.WriteLine("Finding Role");
+
 
                 //Seperates roles into an array
                 string[] seperatedRoles = SeperateRoles(roleName);
 
                 foreach (string formRole in seperatedRoles)
                 {
-                    //await SheetsFunctionality.CheckAndCreateRole(g, formRole); // A new role is created if it doesn't exist (This is now done when formatting roles)
-                    //Console.WriteLine("Role removed " + formRole);
                     await MatchRoleGroups(user, formRole, roleName); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
-                    //Console.WriteLine("Matching Group");
                 }
 
 
@@ -195,7 +191,7 @@ namespace DiscordBot
                 if (user.Roles.Contains(role))
                 {
                     updatedRoles.Remove(role);
-                    //Console.WriteLine("Removing: " + role);
+
                 }
             }
             await user.AddRolesAsync(updatedRoles);

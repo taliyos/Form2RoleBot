@@ -4,10 +4,10 @@
  * This program uses Newtonsoft's JSON, RogueExceptions' Discord.NET, and Google Sheets API v4
  */
 
-using System;
-using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
+using System;
+using System.Threading.Tasks;
 
 namespace DiscordBot
 {
@@ -16,7 +16,7 @@ namespace DiscordBot
         private DiscordSocketClient _client;
         private CommandHandler _handler;
 
-        private const string Version = "0.3.0a2";
+        private const string Version = "0.3.0a3";
 
         private static void Main(string[] args)
             => new Program().StartAsync(args).GetAwaiter().GetResult();
@@ -49,9 +49,9 @@ namespace DiscordBot
             await _client.StartAsync();
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
+            while (_client.ConnectionState != ConnectionState.Connected) { }
 
-
-            await Task.Delay(750); // delay so update roles doesn't run before connecting to the server.
+            //await Task.Delay(750); // delay so update roles doesn't run before connecting to the server.
 
             Console.WriteLine("\n");
             await Sheets.UpdateRoles(_client); // forces update initially on all servers
@@ -264,7 +264,7 @@ namespace DiscordBot
                 else if (s.Equals("--help"))
                 {
                     Console.WriteLine("---------------------------------------------------------------------");
-                    Console.WriteLine("Check the GitHub repository (https://github.com/talios0/Form2RoleBot/releases) for help. If a bug is encontered, submit an issue on the repo.");
+                    Console.WriteLine("Check the GitHub repository (https://github.com/talios0/Form2RoleBot) for help. If a bug is encontered, submit an issue on the repo.");
                     Console.WriteLine("---------------------------------------------------------------------");
                 }
                 else if (s.Equals("--who"))
@@ -273,12 +273,14 @@ namespace DiscordBot
                     Console.WriteLine("v0.0.0 -> current Created by Talios0");
                     Console.WriteLine("v0.2.0 and v0.2.1 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)");
                     Console.WriteLine("----------------------------------------------------------------------");
-                } else if (s.Equals("--update"))
+                }
+                else if (s.Equals("--update"))
                 {
                     Console.WriteLine("---------------------------------------------------------------------");
                     Console.WriteLine("Check for updates at https://github.com/talios0/Form2RoleBot/releases");
                     Console.WriteLine("---------------------------------------------------------------------");
-                } else if (s.Equals("--all"))
+                }
+                else if (s.Equals("--all"))
                 {
                     Console.WriteLine("---------------------------------------------------------------------");
                     Console.WriteLine("Form2Role Bot v" + Version);
