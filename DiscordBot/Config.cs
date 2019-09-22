@@ -17,7 +17,7 @@ namespace DiscordBot
 
         public static BotConfig Bot;
         public static GoogleConfig GoogleData;
-        public static RoleGroupConfig RoleGroup;
+        public static List<RoleGroup> roleGroup;
         public static DiscordIDs UserIDs;
 
         public static bool newBotConfig, newGoogleConfig, newRoleGroupConfig, newUserIDs;
@@ -195,14 +195,16 @@ namespace DiscordBot
         {
             if (!File.Exists(RoleConfFile))
             {
-                RoleGroup = new RoleGroupConfig
-                {
-                    // Default values for RoleGroupConfig
-                    Groups = new string[5]
-                };
+                roleGroup = new List<RoleGroup>();
+                List<string> roles = new List<string>();
+                roles.Add("Default Role");
+                roles.Add("Default Role 2");
+                roles.Add("Default Role 3");
+                roleGroup.Add(new RoleGroup(roleGroup.Count, roles));
+                roleGroup.Add(new RoleGroup(roleGroup.Count, roles));
 
                 newRoleGroupConfig = true;
-                string roleJson = JsonConvert.SerializeObject(RoleGroup, Formatting.Indented);
+                string roleJson = JsonConvert.SerializeObject(roleGroup, Formatting.Indented);
                 File.WriteAllText(RoleConfFile, roleJson);
             }
             else
@@ -210,7 +212,7 @@ namespace DiscordBot
                 string roleJson = File.ReadAllText(RoleConfFile);
                 try
                 {
-                    RoleGroup = JsonConvert.DeserializeObject<RoleGroupConfig>(roleJson);
+                    roleGroup = JsonConvert.DeserializeObject<List<RoleGroup>>(roleJson);
                 }
                 catch
                 {
@@ -262,7 +264,7 @@ namespace DiscordBot
 
     public struct RoleGroupConfig
     {
-        public string[] Groups; // Used for storing role groups
+        public RoleGroup[] Groups; // Used for storing role groups
     }
 
     public struct DiscordIDs

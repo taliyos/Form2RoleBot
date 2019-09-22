@@ -88,32 +88,6 @@ namespace DiscordBot
             return guild.Roles.FirstOrDefault(x => x.Name == role);
         }
 
-        public static async Task MatchRoleGroups(SocketGuildUser user, string role, string actualCell)
-        {
-            if (!Config.Bot.UseRoleGroups) return;
-            try
-            {
-                foreach (string roleGroup in Config.RoleGroup.Groups)
-                {
-                    foreach (SocketRole userRole in user.Roles) // Checks all roles assigned to the user
-                    {
-                        if (roleGroup.Contains(userRole.Name + ",") && roleGroup.Contains(role + ",") && role != userRole.Name) // Checks for overlapping roles (from roleGroups.json)
-                        {
-                            // Removes the user's current role
-                            if (!actualCell.Contains(userRole.Name) || !actualCell.Contains(role))
-                            {
-                                Console.WriteLine("ROLE GROUP MATCH: " + userRole.Name + ", " + role);
-                                await user.RemoveRoleAsync(userRole);
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                Console.WriteLine("\nroleGroups.json is either not set-up or incorrectly configured. Consider changing 'UseRoleGroups' to 'false' in config.json");
-            }
-        }
 
         public static async Task<List<string>> GetRoles(IList<object> userData, SocketGuildUser user)
         {
@@ -133,7 +107,7 @@ namespace DiscordBot
 
                 foreach (string formRole in seperatedRoles)
                 {
-                    await MatchRoleGroups(user, formRole, roleName); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
+                    //await RoleGroupFunctionality.MatchRoleGroups(columns, user, formRole, roleName); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
                 }
 
 

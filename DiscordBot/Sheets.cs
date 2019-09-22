@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DiscordBot
@@ -19,6 +20,7 @@ namespace DiscordBot
         private static SheetsService _service;
 
         private static IList<IList<object>> _previousSheetValues;
+        private static IList<IList<object>> _columnNames;
 
         public static async Task UpdateRoles(DiscordSocketClient client)
         {
@@ -29,11 +31,21 @@ namespace DiscordBot
             });
 
             SpreadsheetsResource.ValuesResource.GetRequest request = _service.Spreadsheets.Values.Get(SheetId, Range);
+            string start = Range.Split(':')[0];
+            start = Regex.Replace(start, @"[\d-]", string.Empty);
+            string end = Range.Split(':')[1];
+            end = Regex.Replace(end, @"[\d-]", string.Empty);
+            SpreadsheetsResource.ValuesResource.GetRequest columns = _service.Spreadsheets.Values.Get(SheetId, start+"1:"+end);
+
 
             ValueRange responses = request.Execute();
+            ValueRange columnNames = columns.Execute();
             _previousSheetValues = responses.Values;
+            _columnNames = columnNames.Values;
 
-            await AssignRoles(client, _previousSheetValues);
+            Console.WriteLine(_columnNames);
+
+            //await AssignRoles(client, _previousSheetValues, _columnNames);
 
         }
 
@@ -126,6 +138,10 @@ namespace DiscordBot
 
             ValueRange responses = request.Execute();
             IList<IList<Object>> values = responses.Values;
+            string start = Range.Split(':')[0];
+            start = Regex.Replace(start, @"[\d-]", string.Empty);
+            SpreadsheetsResource.ValuesResource.GetRequest _columns = _service.Spreadsheets.Values.Get(SheetId, "");
+            IList<IList<Object>> columns = _columns.Execute().Values;
 
             // Checks if the newly retrieved sheet is the same as the previous one
             if (values.Count == _previousSheetValues.Count)

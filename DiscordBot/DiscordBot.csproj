@@ -297,6 +297,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DiscordSpecificHandler.cs" />
+    <Compile Include="RoleGroup.cs" />
+    <Compile Include="RoleGroupFunctionality.cs" />
     <Compile Include="Sheets.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="Modules\Misc.cs" />
