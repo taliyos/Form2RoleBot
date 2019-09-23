@@ -43,7 +43,7 @@ namespace DiscordBot
 
             _client = new DiscordSocketClient(new DiscordSocketConfig
             {
-                LogLevel = LogSeverity.Info
+                LogLevel = logS
             });
 
             _client.Log += Log;
