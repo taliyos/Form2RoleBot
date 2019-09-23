@@ -15,5 +15,13 @@ namespace DiscordBot
             columnNumber = _columnNumber;
             roles = _roles;
         }
+
+        public override string ToString() {
+            string roleString = "";
+            foreach (string r in roles) {
+                roleString += r + ", ";
+            }
+            return columnNumber + ": " + roleString;
+        }
     }
 }

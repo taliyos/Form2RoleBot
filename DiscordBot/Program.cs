@@ -30,7 +30,9 @@ namespace DiscordBot
             Console.WriteLine("Check for updates at https://github.com/talios0/Form2RoleBot/releases");
             Console.WriteLine("----------------------------------------------------------------------\n\n");
 
-            StartArgsHandler(args);
+            LogSeverity logS = LogSeverity.Info;
+
+            if (StartArgsHandler(args)) logS = LogSeverity.Verbose;
 
             RequestConfig();
             RequestGoogleConfig();
@@ -48,10 +50,7 @@ namespace DiscordBot
             await _client.LoginAsync(TokenType.Bot, Config.Bot.Token);
             await _client.StartAsync();
             _handler = new CommandHandler();
-            await _handler.InitializeAsync(_client);
-            while (_client.ConnectionState != ConnectionState.Connected) { }
-
-            //await Task.Delay(750); // delay so update roles doesn't run before connecting to the server.
+            _handler.InitializeAsync(_client).Wait();
 
             Console.WriteLine("\n");
             await Sheets.UpdateRoles(_client); // forces update initially on all servers
@@ -245,13 +244,15 @@ namespace DiscordBot
             Console.WriteLine(message.Message);
         }
 
-        private static void StartArgsHandler(string[] args)
+        private static bool StartArgsHandler(string[] args)
         {
             if (args.Length == 0)
             {
-                return;
+                return false;
             }
 
+
+            bool stop = true;
 
             foreach (string s in args)
             {
@@ -288,10 +289,15 @@ namespace DiscordBot
                     Console.WriteLine("v0.2.0 and v0.2.1 created by Talios0 (Charles), dsong175 (Daniel), and Lawrence-O (Lawrence)");
                     Console.WriteLine("Check for updates at https://github.com/talios0/Form2RoleBot/releases");
                     Console.WriteLine("----------------------------------------------------------------------\n\n");
-
+                }
+                else if (s.Equals("--verbose"))
+                {
+                    Console.WriteLine("Form2Role Bot v{0} is now running in verbose mode. It is recommended to run this through the command prompt.");
+                    return true;
                 }
             }
-            Environment.Exit(0);
+            if (stop) Environment.Exit(0);
+            return false;
         }
     }
 }

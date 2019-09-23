@@ -20,8 +20,9 @@ namespace DiscordBot
         private static SheetsService _service;
 
         private static IList<IList<object>> _previousSheetValues;
-        private static IList<IList<object>> _columnNames;
+        private static IList<object> _columnNames;
 
+        // Requests Google Sheets information and initiates command to assign roles
         public static async Task UpdateRoles(DiscordSocketClient client)
         {
             _service = new SheetsService(new BaseClientService.Initializer()
@@ -35,18 +36,15 @@ namespace DiscordBot
             start = Regex.Replace(start, @"[\d-]", string.Empty);
             string end = Range.Split(':')[1];
             end = Regex.Replace(end, @"[\d-]", string.Empty);
-            SpreadsheetsResource.ValuesResource.GetRequest columns = _service.Spreadsheets.Values.Get(SheetId, start+"1:"+end);
+            SpreadsheetsResource.ValuesResource.GetRequest columns = _service.Spreadsheets.Values.Get(SheetId, start+"1:"+end+"1");
 
 
             ValueRange responses = request.Execute();
             ValueRange columnNames = columns.Execute();
             _previousSheetValues = responses.Values;
-            _columnNames = columnNames.Values;
+            _columnNames = columnNames.Values[0];
 
-            Console.WriteLine(_columnNames);
-
-            //await AssignRoles(client, _previousSheetValues, _columnNames);
-
+            await AssignRoles(client, _previousSheetValues);
         }
 
         private static async Task AssignRoles(DiscordSocketClient client, IList<IList<Object>> values)
@@ -59,15 +57,14 @@ namespace DiscordBot
                     Dictionary<SocketGuildUser, IList<object>> redoUsers = new Dictionary<SocketGuildUser, IList<object>>();
 
                     Console.WriteLine("\n\nUpdating roles in " + g.Name + ".");
-                    await g.DownloadUsersAsync();
-                    SocketGuildUser[] allUsers = g.Users.ToArray();
+                    await g.DownloadUsersAsync(); // Gets all users
+                    SocketGuildUser[] allUsers = g.Users.ToArray(); // Converts list of users to array
 
                     foreach (SocketGuildUser u in allUsers)
                     {
-                        //Console.WriteLine("Checking roles for: " + u.Username);
+                        // Checking roles for user
                         foreach (IList<object> row in values)
                         {
-                            //Console.WriteLine("Checking user");
                             if (!SheetsFunctionality.FindUsername(u, row)) continue;
 
                             //await SheetsFunctionality.StoreUserID(u);
@@ -77,7 +74,6 @@ namespace DiscordBot
 
                             // Gets all roles that need to be assigned to the user in addition to removing those that interfere with roleGroups.json
                             allUserRoles = await SheetsFunctionality.GetRoles(row, u);
-                            //Console.WriteLine("Got Roles");
 
                             List<SocketRole> formattedRoles = new List<SocketRole>();
 
@@ -91,9 +87,9 @@ namespace DiscordBot
                                     role = await SheetsFunctionality.CreateRole(g, s);
                                     redo = true;
                                 }
-                                //Console.WriteLine("Adding Role: " + role.ToString());
-                                formattedRoles.Add(role);
+                                formattedRoles.Add(role); // Adds role to list of queued roles
                             }
+
                             // Add user to list of roles to redo
                             if (redo) redoUsers.Add(u, row);
 
@@ -102,16 +98,14 @@ namespace DiscordBot
 
                             // Find and set nickname
                             await SheetsFunctionality.FindAndSetNickname(u, row);
-                            //Console.WriteLine("DONE");
                         }
 
+                        // Secondary Role Assigner for roles that were just created
                         await AssignNewRoles(g, redoUsers);
                     }
                 }
 
             }
-            //DateTime endTime = DateTime.Now - startTime;
-            //TimeSpan span = TimeSpan.
             time.Stop();
             Console.WriteLine(time.ElapsedMilliseconds + "ms\n");
         }
@@ -131,6 +125,7 @@ namespace DiscordBot
                 await SheetsFunctionality.AddRolesToUser(user.Key, mappedRoles.ToArray());
             }
         }
+
         public static async Task CheckSheets(DiscordSocketClient client)
         {
 
@@ -140,8 +135,6 @@ namespace DiscordBot
             IList<IList<Object>> values = responses.Values;
             string start = Range.Split(':')[0];
             start = Regex.Replace(start, @"[\d-]", string.Empty);
-            SpreadsheetsResource.ValuesResource.GetRequest _columns = _service.Spreadsheets.Values.Get(SheetId, "");
-            IList<IList<Object>> columns = _columns.Execute().Values;
 
             // Checks if the newly retrieved sheet is the same as the previous one
             if (values.Count == _previousSheetValues.Count)

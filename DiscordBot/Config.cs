@@ -57,9 +57,9 @@ namespace DiscordBot
                     Token = null,
                     Prefix = "!",
                     UpdateDelay = 60, // 1 hour default
-                    UseRoleGroups = false,
                     PMUsers = true,
-                    PMMessage = "Welcome to the server!"
+                    PMMessage = "Welcome to the server!",
+                    UseRoleGroups = false
                 };
 
                 newBotConfig = true;
@@ -167,8 +167,8 @@ namespace DiscordBot
                 };
 
                 newGoogleConfig = true;
-                // Default values for GoogleData
 
+                // Default values for GoogleData
                 string googleJson = JsonConvert.SerializeObject(GoogleData, Formatting.Indented);
                 File.WriteAllText(GoogleConfFile, googleJson);
             }
@@ -189,7 +189,6 @@ namespace DiscordBot
 
 
         }
-
 
         private static void CreateRoleGroupConfigFiles()
         {

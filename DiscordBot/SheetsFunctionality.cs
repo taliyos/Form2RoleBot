@@ -84,32 +84,32 @@ namespace DiscordBot
 
         public static async Task<SocketRole> CreateRole(SocketGuild guild, string role)
         {
-            await guild.CreateRoleAsync(role);
-            return guild.Roles.FirstOrDefault(x => x.Name == role);
+            guild.CreateRoleAsync(role).Wait();
+            SocketRole sRole = guild.Roles.FirstOrDefault(x => x.Name == role);
+            return sRole;
         }
 
 
-        public static async Task<List<string>> GetRoles(IList<object> userData, SocketGuildUser user)
+        public static async Task<List<string>> GetRoles(IList<object> userRow, SocketGuildUser user)
         {
 
             List<string> allUserRoles = new List<string>();
             SocketRole[] assignedRoles = user.Roles.ToArray();
-            for (int i = Config.GoogleData.RolesStartAfter; i < userData.Count - Config.GoogleData.RolesEndBefore; i++)
+            for (int i = Config.GoogleData.RolesStartAfter; i < userRow.Count - Config.GoogleData.RolesEndBefore; i++)
             {
-                string roleName = userData[i].ToString();
+                string roleName = userRow[i].ToString().Trim();
 
                 // Goto the next cell if there's no role
-                if (roleName.Equals("None") || roleName.Equals("")) continue;
-
+                if (roleName.Equals("None") || roleName.Equals("")) {
+                    await RoleGroupFunctionality.RemovePreviousRole(user, i - Config.GoogleData.RolesStartAfter);
+                    continue;
+                }
 
                 //Seperates roles into an array
                 string[] seperatedRoles = SeperateRoles(roleName);
 
-                foreach (string formRole in seperatedRoles)
-                {
-                    //await RoleGroupFunctionality.MatchRoleGroups(columns, user, formRole, roleName); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
-                }
-
+                // Uses a foreach in case two or more roles are specified in one input
+                await RoleGroupFunctionality.MatchRoleGroups(user, roleName, seperatedRoles, i - Config.GoogleData.RolesStartAfter); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
 
                 allUserRoles.AddRange(seperatedRoles);
             }
@@ -152,15 +152,16 @@ namespace DiscordBot
 
         public static async Task AddRolesToUser(SocketGuildUser user, SocketRole[] roles)
         {
-            List<SocketRole> updatedRoles = roles.ToList();
+            if (roles.Length == 0) return;
+            List<SocketRole> updatedRoles = roles.ToList(); // List error if SocketRole[] roles is passed as a list
             foreach (SocketRole role in roles) // gets rid of roles the user already has to help prevent discord limits
             {
                 if (user.Roles.Contains(role))
                 {
                     updatedRoles.Remove(role);
-
                 }
             }
+            if (updatedRoles.Count == 0) return;
             await user.AddRolesAsync(updatedRoles);
         }
 
