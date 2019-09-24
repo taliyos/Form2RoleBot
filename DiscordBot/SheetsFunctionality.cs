@@ -95,13 +95,14 @@ namespace DiscordBot
 
             List<string> allUserRoles = new List<string>();
             SocketRole[] assignedRoles = user.Roles.ToArray();
+            int columnNumber = 0;
             for (int i = Config.GoogleData.RolesStartAfter; i < userRow.Count - Config.GoogleData.RolesEndBefore; i++)
             {
                 string roleName = userRow[i].ToString().Trim();
 
                 // Goto the next cell if there's no role
                 if (roleName.Equals("None") || roleName.Equals("")) {
-                    await RoleGroupFunctionality.RemovePreviousRole(user, i - Config.GoogleData.RolesStartAfter);
+                    await RoleGroupFunctionality.RemovePreviousRole(user, columnNumber);
                     continue;
                 }
 
@@ -109,9 +110,10 @@ namespace DiscordBot
                 string[] seperatedRoles = SeperateRoles(roleName);
 
                 // Uses a foreach in case two or more roles are specified in one input
-                await RoleGroupFunctionality.MatchRoleGroups(user, roleName, seperatedRoles, i - Config.GoogleData.RolesStartAfter); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
+                await RoleGroupFunctionality.MatchRoleGroups(user, roleName, seperatedRoles, columnNumber); // Removes roles that interfere with each other as defined in the roleGroups.json configuration file
 
                 allUserRoles.AddRange(seperatedRoles);
+                columnNumber++;
             }
 
             return allUserRoles;

@@ -16,7 +16,7 @@ namespace DiscordBot
         private DiscordSocketClient _client;
         private CommandHandler _handler;
 
-        private const string Version = "0.3.0";
+        private const string Version = "0.3.1";
 
         private static void Main(string[] args)
             => new Program().StartAsync(args).GetAwaiter().GetResult();
@@ -47,10 +47,10 @@ namespace DiscordBot
             });
 
             _client.Log += Log;
-            await _client.LoginAsync(TokenType.Bot, Config.Bot.Token);
+            _client.LoginAsync(TokenType.Bot, Config.Bot.Token).Wait();
             await _client.StartAsync();
             _handler = new CommandHandler();
-            _handler.InitializeAsync(_client).Wait();
+            await _handler.InitializeAsync(_client);
 
             Console.WriteLine("\n");
             await Sheets.UpdateRoles(_client); // forces update initially on all servers

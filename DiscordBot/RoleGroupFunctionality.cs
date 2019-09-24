@@ -35,6 +35,7 @@ namespace DiscordBot
         }
 
         public static async Task RemovePreviousRole(SocketGuildUser user, int columnNumber) {
+            if (!Config.Bot.UseRoleGroups) return;
             foreach (SocketRole role in user.Roles) {
                 foreach (RoleGroup rGroup in Config.roleGroup) {
                     if (columnNumber != rGroup.columnNumber) continue;
