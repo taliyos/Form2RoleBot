@@ -51,6 +51,8 @@ namespace DiscordBot
             await _client.StartAsync();
             _handler = new CommandHandler();
             await _handler.InitializeAsync(_client);
+            while (_client.ConnectionState != ConnectionState.Connected) { 
+            }
 
             Console.WriteLine("\n");
             await Sheets.UpdateRoles(_client); // forces update initially on all servers
