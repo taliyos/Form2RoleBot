@@ -92,17 +92,21 @@ namespace DiscordBot
 
         public static async Task<List<string>> GetRoles(IList<object> userRow, SocketGuildUser user)
         {
-
             List<string> allUserRoles = new List<string>();
             SocketRole[] assignedRoles = user.Roles.ToArray();
+            string[] assignedRoleNames = new string[assignedRoles.Length];
+            for (int i = 0; i < assignedRoles.Length; i++) {
+                assignedRoleNames[i] = assignedRoles[i].Name;
+            }
+
             int columnNumber = 0;
             for (int i = Config.GoogleData.RolesStartAfter; i < userRow.Count - Config.GoogleData.RolesEndBefore; i++)
             {
                 string roleName = userRow[i].ToString().Trim();
-
                 // Goto the next cell if there's no role
                 if (roleName.Equals("None") || roleName.Equals("")) {
-                    await RoleGroupFunctionality.RemovePreviousRole(user, columnNumber);
+                    await RoleGroupFunctionality.RemovePreviousRole(user, assignedRoleNames, columnNumber);
+                    columnNumber++;
                     continue;
                 }
 

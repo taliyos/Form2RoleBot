@@ -297,6 +297,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DiscordSpecificHandler.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="RoleGroup.cs" />
     <Compile Include="RoleGroupFunctionality.cs" />
     <Compile Include="Sheets.cs" />
@@ -311,6 +316,10 @@
     <Compile Include="CommandHandler.cs" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.1">

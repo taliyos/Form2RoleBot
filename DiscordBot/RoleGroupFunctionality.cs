@@ -34,19 +34,29 @@ namespace DiscordBot
             }
         }
 
-        public static async Task RemovePreviousRole(SocketGuildUser user, int columnNumber) {
+        public static async Task RemovePreviousRole(SocketGuildUser user, string[] assignedRoleNames, int columnNumber) {
+
+            List<SocketRole> rolesToRemove = new List<SocketRole>();
+
             if (!Config.Bot.UseRoleGroups) return;
-            foreach (SocketRole role in user.Roles) {
-                foreach (RoleGroup rGroup in Config.roleGroup) {
-                    if (columnNumber != rGroup.columnNumber) continue;
-                    foreach (string configRole in rGroup.roles) {
-                        if (role.Name.ToLower().Equals(configRole.ToLower())) {
-                            await user.RemoveRoleAsync(role);
-                            return;
+            foreach (RoleGroup rGroup in Config.roleGroup)
+            {
+                if (columnNumber != rGroup.columnNumber) continue;
+                foreach (string configRole in rGroup.roles) {
+                    foreach (string assignedRole in assignedRoleNames)
+                    {
+                        if (assignedRole.Equals(configRole))
+                        {
+                            rolesToRemove.Add(user.Roles.FirstOrDefault(x => x.Name == configRole));
+                            Console.WriteLine("Removing: " + assignedRole);
                         }
                     }
                 }
             }
+            if (rolesToRemove.Count == 0) return;
+            await user.RemoveRolesAsync(rolesToRemove);
         }
     }
+
+
 }
