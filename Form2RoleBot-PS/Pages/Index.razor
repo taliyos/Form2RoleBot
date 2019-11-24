@@ -1,0 +1,59 @@
+﻿@page "/"
+@using DiscordBot;
+@inject IUriHelper UriHelper
+@inject HttpClient HttpClient
+@inject IJSRuntime jsRuntime
+
+        <h1 class="text-center">BT Discord Roles</h1>
+        <h5 class="text-center text-secondary" style="margin-bottom: 30px;">Login with Discord and PowerSchool to automatically assign roles</h5>
+        <div class="alert alert-success" role="alert"><span>Classes assigned to USER successfully!</span></div>        
+        <form class="text-left d-flex flex-column justify-content-center m-auto" style="padding-right: 0;padding-left: 0;width: 350px;height: 175px;margin-top: 0;">
+            <button class="btn btn-primary m-auto" type="button" @onclick="DiscordLogin">Login with Discord</button>
+            <input type="text" class="form-control" required autofocus placeholder="Powerschool Username" style="margin-right: 0;margin-left: 0;margin-bottom: 5px;" />
+            <input class="form-control" name="password" type="password" placeholder="PowerSchool Password" required="" autocomplete="off" />
+            <button type="button" class="btn btn-primary m-auto m-lg-auto" @onclick="Login">Login with PowerSchool</button>   
+        </form>
+
+@code {
+
+    private string Type { get; set; }
+    private string DiscordOAuth { get; set; }
+
+    protected override void OnInitialized()
+    {
+
+        GetDiscordLogin();
+        if (DiscordOAuth != null)
+        {
+            Form2RoleBot_PS.Program.bot.SetToken(DiscordOAuth);
+            Form2RoleBot_PS.Program.bot.AssignRoles();
+
+        }
+    }
+
+
+    private void GetDiscordLogin()
+    {
+        var uriFragment = new Uri(UriHelper.GetAbsoluteUri()).Fragment;
+        if (uriFragment.Length < 2) return;
+        uriFragment = uriFragment.Trim('#');
+        string[] fragments = uriFragment.Split('=');
+        DiscordOAuth = fragments[2].Split('&')[0];
+    }
+
+
+    private async Task DiscordLogin()
+    {
+        UriHelper.NavigateTo("https://discordapp.com/api/oauth2/authorize?client_id=491581726674518036&redirect_uri=https%3A%2F%2Flocalhost%3A5001%2F&response_type=token&scope=identify");
+    }
+
+    private async Task Login()
+    {
+        var s = await jsRuntime.InvokeAsync<object>("GetDiscordID", DiscordOAuth);
+        Console.WriteLine(s);
+    }
+
+    private async Task Check() {
+        await jsRuntime.InvokeAsync<object>("CheckStatus");
+    }
+}
