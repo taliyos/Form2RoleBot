@@ -33,8 +33,9 @@ Forces an update to all connected servers. This will bypass the standard sheet c
 
 ## JSON Configuration
 Configuration files are located in the /Config/ folder. If there isn't a Config folder or any of the files are corrupt/missing, the bot will automatically create new ones.
+Default configuration files will result in a crash.
 
-Make sure **all information is in quotes except** for "RolesStartAfter", "RolesEndBefore", "DiscordIDField", and "NicknameField"
+Make sure **all information is in quotes except** for "RolesStartAfter", "RolesEndBefore", "DiscordIDField", "NicknameField", and "NicknameOnly"
 
 ### Bot Configuration
 Located in Config/config.json
@@ -106,6 +107,24 @@ Specifies where the Discord ID can be found in the data. (This will only work at
 Specifies where the Nickname can be found in the data. By default, the configuration specifies "-1" which means that the bot will treat it as the last field in the provided range. In addition, "-2" can also be specified which should be used if there isn't a nickname field. Using a number like "15" means it'll take the 16th position in the range. (starts at 0)
 
 `"NicknameField": -1`
+
+### Nickname Only
+If you only want the bot to set nicknames (no roles), then a sample google configuration would look like the following:
+
+```{
+  "APIKey": "KEY",
+  "SheetsID": "ID",
+  "Range": "B2:C",
+  "RolesStartAfter": 0,
+  "RolesEndBefore": 0,
+  "DiscordIDField": 0,
+  "NicknameField": -1,
+  "NicknameOnly": true
+}```
+
+In this configuration, the first column is the discord name and the second is the nickname field. Out of convenience, the nickname field is set to '-1', which correlates to the last column in the provided range. The sheet starts at B2 rather than B1 because the header (transferred when using google forms) is not needed.
+
+`"NicknameOnly": true` or `"NicknameOnly": false`
 
 ## Bot Permissions
 While on the *"Bot"* page (www.discordapp.com/developers) make sure to give the bot permission to *"Manage Nicknames"* if you want the bot change nicknames and *"Manage Roles"*.

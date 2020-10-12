@@ -164,7 +164,8 @@ namespace DiscordBot
                     RolesStartAfter = 1,
                     RolesEndBefore = 1,
                     DiscordIDField = 0,
-                    NicknameField = -1
+                    NicknameField = -1,
+                    NicknameOnly = false
                 };
 
                 newGoogleConfig = true;
@@ -259,6 +260,7 @@ namespace DiscordBot
         public int RolesEndBefore; // # of spots before the final index in the range where the last role lies
         public int DiscordIDField; // -1 is default (first field) any other is a point in the range (0, 1, 2, 3...)
         public int NicknameField; // -1 is default (last field) any other is point in range (0, 1, 2, 3...)
+        public bool NicknameOnly;
         //-2 for the nickname field = no nickname field
         // -2 DOES NOT WORK FOR THE DISCORD ID FIELD, WHICH IS REQUIRED.
     }

@@ -68,13 +68,19 @@ namespace DiscordBot
                             if (!SheetsFunctionality.FindUsername(u, row)) continue;
 
                             //await SheetsFunctionality.StoreUserID(u);
+                            if (Config.GoogleData.NicknameOnly)
+                            {
+                                Console.WriteLine("Updating Nickname for " + u.Username + "#" + u.Discriminator);
+                                await SheetsFunctionality.FindAndSetNickname(u, row);
+                                continue;
+                            }
 
                             Console.WriteLine("Updating Roles for " + u.Username + "#" + u.Discriminator);
                             List<string> allUserRoles = new List<string>(); // All of the rolls that need to be assigned to the user
 
                             // Gets all roles that need to be assigned to the user in addition to removing those that interfere with roleGroups.json
                             allUserRoles = await SheetsFunctionality.GetRoles(row, u);
-                            allUserRoles.Add(Config.Bot.AutoRole);
+                            if(Config.Bot.AutoRole != "") allUserRoles.Add(Config.Bot.AutoRole);
 
                             List<SocketRole> formattedRoles = new List<SocketRole>();
 
