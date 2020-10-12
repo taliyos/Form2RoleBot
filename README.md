@@ -108,7 +108,7 @@ Specifies where the Nickname can be found in the data. By default, the configura
 
 `"NicknameField": -1`
 
-### Nickname Only
+#### Nickname Only
 If you only want the bot to set nicknames (no roles), then a sample google configuration would look like the following:
 
 ```
