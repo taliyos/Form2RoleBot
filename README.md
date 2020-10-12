@@ -111,7 +111,8 @@ Specifies where the Nickname can be found in the data. By default, the configura
 ### Nickname Only
 If you only want the bot to set nicknames (no roles), then a sample google configuration would look like the following:
 
-```{
+```
+{
   "APIKey": "KEY",
   "SheetsID": "ID",
   "Range": "B2:C",
@@ -120,7 +121,8 @@ If you only want the bot to set nicknames (no roles), then a sample google confi
   "DiscordIDField": 0,
   "NicknameField": -1,
   "NicknameOnly": true
-}```
+}
+```
 
 In this configuration, the first column is the discord name and the second is the nickname field. Out of convenience, the nickname field is set to '-1', which correlates to the last column in the provided range. The sheet starts at B2 rather than B1 because the header (transferred when using google forms) is not needed.
 
