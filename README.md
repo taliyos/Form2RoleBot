@@ -20,7 +20,7 @@ The bot does support multiple roles per data box (checkboxes in google forms) an
 
 ie. "Moderator + SuperUser" will grant the roles "Moderator" and "SuperUser".
 
-## nicknames
+## Nicknames
 Form2Role Bot allows for a nickname field which will change the user's nickname. 
 
 **See JSON configuration for more information how to configure the bot to find this field**
@@ -62,6 +62,36 @@ The prefix is the character that comes before a command. By default, the prefix 
 The delay between checking for updates to the provided Google Sheet. This is a number specfied in minutes.
 
 `"UpdateDelay": 36`
+
+#### UseRoleGroups (experimental)
+Whether or not to use role groups. Role groups specifiy a list of roles that can't be combined. ie. If the roles of "red" and "blue" are in the role group config and the form has the role "red" and the user currently has role "blue", the role "blue" will be removed and the role "red" will be added.
+
+`"UseRoleGroups": false`
+
+#### PMUsers
+Specifies if the bot should PM users upon joining the server. The message can be changed using "PMMessage".
+
+`"PMUsers": true`
+
+#### PMMessage
+The message sent when a user joins the server. If PMUsers is set to false, this message is not sent.
+
+`"PMMessage: "Hello! Welcome to the server!"`
+
+#### PMSuccess
+The message sent when the bot changes the user's nickname or roles. If changes are made to the bot, causing the bot to apply different roles, the bot will send out another message. The value of PMUsers does not matter. Leave blank, "", to ignore.
+
+`"PMSuccess": "Congratulations /u, you've been verified!"`
+
+##### Message Commands
+"/u" - the user's username
+
+"/g" - the server's name
+
+#### AutoRole
+The role specified here will be assigned to every user who has filled out the form, no matter what is in the form. Leave blank, "", to ignore.
+
+`"AutoRole": "Member"`
 
 ### Google Configuration
 Located in Config/googleConfig.json
