@@ -124,23 +124,24 @@ namespace DiscordBot
         }
 
 
-        public static async Task FindAndSetNickname(SocketGuildUser user, IList<object> userCell)
+        public static async Task<bool> FindAndSetNickname(SocketGuildUser user, IList<object> userCell)
         {
             string nickname;
 
             if (Config.GoogleData.NicknameField == -2) // finds the nickname in the Google Sheets data
-                return;
+                return false;
 
             if (Config.GoogleData.NicknameField != -1)
                 nickname = userCell[Config.GoogleData.NicknameField].ToString();
             else
                 nickname = userCell[userCell.Count - 1].ToString();
 
-            await SetNickname(user, nickname);
+            return await SetNickname(user, nickname);
         }
 
-        public static async Task SetNickname(SocketGuildUser user, string nickname) // sets the user's nickname
+        public static async Task<bool> SetNickname(SocketGuildUser user, string nickname) // sets the user's nickname
         {
+            if (user.Nickname == nickname) return false;
             try
             {
                 // sets nickname
@@ -153,7 +154,9 @@ namespace DiscordBot
             {
                 // occurs when the user is ranked above the bot
                 Console.WriteLine("No nickname specified or their rank is too high.");
+                return false;
             }
+            return true;
         }
 
         public static async Task AddRolesToUser(SocketGuildUser user, SocketRole[] roles)

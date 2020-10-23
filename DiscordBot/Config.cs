@@ -59,6 +59,7 @@ namespace DiscordBot
                     UpdateDelay = 60, // 1 hour default
                     PMUsers = true,
                     PMMessage = "Welcome to the server!",
+                    PMSuccess = "",
                     UseRoleGroups = false,
                     AutoRole = ""
                 };
@@ -248,6 +249,7 @@ namespace DiscordBot
         public bool UseRoleGroups; // Whether or not to use Role Groups.
         public bool PMUsers; // Whether or not users will be PMed to fill the form upon joining the server.
         public string PMMessage; // Message sent to new users
+        public string PMSuccess; // Message sent after successfully changing roles (leave blank to ignore)
         public string AutoRole;
     }
 

@@ -62,6 +62,7 @@ namespace DiscordBot
 
                     foreach (SocketGuildUser u in allUsers)
                     {
+                        bool change = false;
                         // Checking roles for user
                         foreach (IList<object> row in values)
                         {
@@ -71,8 +72,8 @@ namespace DiscordBot
                             if (Config.GoogleData.NicknameOnly)
                             {
                                 Console.WriteLine("Updating Nickname for " + u.Username + "#" + u.Discriminator);
-                                await SheetsFunctionality.FindAndSetNickname(u, row);
-                                continue;
+                                change = await SheetsFunctionality.FindAndSetNickname(u, row);
+                                break;
                             }
 
                             Console.WriteLine("Updating Roles for " + u.Username + "#" + u.Discriminator);
@@ -93,7 +94,13 @@ namespace DiscordBot
                                 {
                                     role = await SheetsFunctionality.CreateRole(g, s);
                                     redo = true;
+                                    change = true;
                                 }
+                                // Don't add the role if the user already has it.
+                                if (u.Roles.Contains(role)) {
+                                    continue;
+                                }
+                                change = true;
                                 formattedRoles.Add(role); // Adds role to list of queued roles
                             }
 
@@ -109,6 +116,11 @@ namespace DiscordBot
 
                         // Secondary Role Assigner for roles that were just created
                         await AssignNewRoles(g, redoUsers);
+
+                        if (change)
+                        {
+                            await DiscordSpecificHandler.VerifyUser(g, u);
+                        }
                     }
                 }
 
