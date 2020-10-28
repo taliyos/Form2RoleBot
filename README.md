@@ -161,6 +161,8 @@ In this configuration, the first column is the discord name and the second is th
 ## Bot Permissions
 While on the *"Bot"* page (www.discordapp.com/developers) make sure to give the bot permission to *"Manage Nicknames"* if you want the bot change nicknames and *"Manage Roles"*.
 
+**Important** There was recently a change to Discord's bot permissions. In order for the bot to function, the option, "Server Members Intent", must be enabled. Without it, the bot can't retrieve the list of users on the server.
+
 ## Oddities and what to do
 If the bot doesn't do anything in the console when it should, press *enter* in the console.
 This occurs because console write outs are paused when text is highlighted.
