@@ -78,13 +78,13 @@ namespace DiscordBot
             }
             if (!roleFound)
             {
-                await guild.CreateRoleAsync(role);
+                await guild.CreateRoleAsync(role, null, null, false, null);
             }
         }
 
         public static async Task<SocketRole> CreateRole(SocketGuild guild, string role)
         {
-            guild.CreateRoleAsync(role).Wait();
+            guild.CreateRoleAsync(role, null, null, false, null).Wait();
             SocketRole sRole = guild.Roles.FirstOrDefault(x => x.Name == role);
             return sRole;
         }
