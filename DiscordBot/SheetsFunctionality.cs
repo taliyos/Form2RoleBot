@@ -171,6 +171,7 @@ namespace DiscordBot
                 }
             }
             if (updatedRoles.Count == 0) return;
+
             await user.AddRolesAsync(updatedRoles);
         }
 
